@@ -12,7 +12,7 @@ test("Toxiproxy", (t: test.Test) => {
         return;
       }
 
-      st.equal(res.statusCode, HttpStatus.OK, "response was not OK");
+      st.equal(res.statusCode, HttpStatus.OK, "response was OK");
       st.end();
     });
   });
