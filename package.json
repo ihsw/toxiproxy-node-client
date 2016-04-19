@@ -7,7 +7,7 @@
     "test": "ts-node ./node_modules/tape/bin/tape tests/**/*.ts | tap-spec",
     "ts-node": "ts-node",
     "typings": "typings",
-    "lint": "tslint -e ./node_modules/**/*.* -e ./typings/**/*.* ./**/*.ts",
+    "lint": "tslint ./tests/**/*.ts ./src/**/*.ts",
     "build": "tsc"
   },
   "repository": {
