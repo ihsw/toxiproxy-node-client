@@ -1,0 +1,30 @@
+{
+  "name": "toxiproxy-node-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node ./node_modules/tape/bin/tape tests/**/*.ts",
+    "ts-node": "ts-node",
+    "typings": "typings",
+    "lint": "tslint -e ./node_modules/**/*.* -e ./typings/**/*.* ./**/*.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ihsw/toxiproxy-node-client.git"
+  },
+  "author": "Adrian Parker <ihsw.aparker@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ihsw/toxiproxy-node-client/issues"
+  },
+  "homepage": "https://github.com/ihsw/toxiproxy-node-client#readme",
+  "devDependencies": {
+    "tape": "^4.5.1",
+    "ts-node": "^0.7.2",
+    "tslint": "^3.7.4",
+    "typescript": "^1.8.10",
+    "typings": "^0.7.12"
+  }
+}
