@@ -2,7 +2,7 @@ sudo: false
 language: node_js
 
 before_install:
-- wget https://github.com/Shopify/toxiproxy/releases/download/v2.0.0rc2/toxiproxy_2.0.0rc2_amd64.deb
+- wget -O toxiproxy_2.0.0rc2_amd64.deb https://github.com/Shopify/toxiproxy/releases/download/v2.0.0rc2/toxiproxy_2.0.0rc2_amd64.deb
 - dpkg -i ./toxiproxy_2.0.0rc2_amd64.deb
 - service toxiproxy start
 before_script:
