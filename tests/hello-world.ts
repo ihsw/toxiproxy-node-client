@@ -5,7 +5,7 @@ import * as HttpStatus from "http-status";
 
 function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
-  
+
   return {
     toxiproxy
   }
@@ -13,7 +13,7 @@ function setup() {
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should return a list of proxies", (st: test.Test) => {
-    const { toxiproxy} = setup();
+    const { toxiproxy } = setup();
     toxiproxy.getProxies((err, body) => {
       st.equal(err, null, "err was not null");
       if (err) {
@@ -24,6 +24,4 @@ test("Toxiproxy", (t: test.Test) => {
       st.end();
     });
   });
-
-  t.end();
 });

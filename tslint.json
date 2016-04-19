@@ -15,9 +15,9 @@
         "no-trailing-whitespace": true,
         "no-var-keyword": true,
         "no-unused-variable": [
-            true,
-            {}
+            true
         ],
+        "object-literal-sort-keys": true,
         "one-line": [
             true,
             "check-open-brace",
