@@ -1,18 +1,26 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import * as request from "request";
+import Toxiproxy from "../src/Toxiproxy";
 import * as HttpStatus from "http-status";
+
+function setup() {
+  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  
+  return {
+    toxiproxy
+  }
+}
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should return a list of proxies", (st: test.Test) => {
-    request.get("http://localhost:8474/proxies", (err, res, body) => {
+    const { toxiproxy} = setup();
+    toxiproxy.getProxies((err, body) => {
       st.equal(err, null, "err was not null");
       if (err) {
         st.end();
         return;
       }
 
-      st.equal(res.statusCode, HttpStatus.OK, "response was OK");
       st.end();
     });
   });
