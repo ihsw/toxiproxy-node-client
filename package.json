@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node ./node_modules/tape/bin/tape tests/**/*.ts",
+    "test": "ts-node ./node_modules/tape/bin/tape tests/**/*.ts | tap-spec",
     "ts-node": "ts-node",
     "typings": "typings",
     "lint": "tslint -e ./node_modules/**/*.* -e ./typings/**/*.* ./**/*.ts",
@@ -21,10 +21,15 @@
   },
   "homepage": "https://github.com/ihsw/toxiproxy-node-client#readme",
   "devDependencies": {
+    "http-status": "^0.2.1",
+    "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
     "ts-node": "^0.7.2",
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
     "typings": "^0.7.12"
+  },
+  "dependencies": {
+    "request": "^2.72.0"
   }
 }

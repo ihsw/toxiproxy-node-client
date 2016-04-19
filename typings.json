@@ -2,9 +2,11 @@
   "name": "toxiproxy-node-client",
   "version": false,
   "dependencies": {
+    "request": "registry:npm/request#2.69.0+20160304121250",
     "tape": "registry:npm/tape#4.0.0+20160322235547"
   },
   "ambientDependencies": {
+    "http-status": "registry:dt/http-status#0.2.1+20160412142223",
     "node": "registry:dt/node#4.0.0+20160412142033"
   }
 }
