@@ -7,3 +7,4 @@ before_install:
 - sudo service toxiproxy start
 before_script:
 - typings install
+- npm run lint
