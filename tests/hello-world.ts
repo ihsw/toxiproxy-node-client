@@ -4,14 +4,18 @@ import * as request from "request";
 import * as HttpStatus from "http-status";
 
 test("Toxiproxy", (t: test.Test) => {
-  request.get("http://localhost:8474/proxies", (err, res, body) => {
-    t.equal(err, null, "err was not null");
-    if (err) {
-      t.end();
-      return;
-    }
+  t.test("Should return a list of proxies", (st: test.Test) => {
+    request.get("http://localhost:8474/proxies", (err, res, body) => {
+      st.equal(err, null, "err was not null");
+      if (err) {
+        st.end();
+        return;
+      }
 
-    t.equal(res.statusCode, HttpStatus.OK, "response was not OK");
-    t.end();
+      st.equal(res.statusCode, HttpStatus.OK, "response was not OK");
+      st.end();
+    });
   });
+
+  t.end();
 });
