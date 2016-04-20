@@ -30,6 +30,6 @@
     "typings": "^0.7.12"
   },
   "dependencies": {
-    "request": "^2.72.0"
+    "superagent": "^1.8.3"
   }
 }
