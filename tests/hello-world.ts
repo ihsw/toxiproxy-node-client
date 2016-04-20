@@ -1,14 +1,13 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
 import Toxiproxy from "../src/Toxiproxy";
-import * as HttpStatus from "http-status";
 
 function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
 
   return {
     toxiproxy
-  }
+  };
 }
 
 test("Toxiproxy", (t: test.Test) => {
