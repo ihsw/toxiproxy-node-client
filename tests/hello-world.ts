@@ -14,9 +14,13 @@ test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
     const { toxiproxy } = setup();
 
-    const createBody = <ICreateProxyBody>{ };
+    const createBody = <ICreateProxyBody>{
+      name: "test",
+      listen: "localhost:26379",
+      upstream: "localhost:6379"
+    };
     toxiproxy.createProxy(createBody, (err, proxy) => {
-      st.equal(err.message, null, "err was not null");
+      st.equal(err, null, "err was not null");
       st.end();
     });
   });
