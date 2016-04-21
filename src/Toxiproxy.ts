@@ -3,11 +3,11 @@ import * as request from "superagent";
 import * as HttpStatus from "http-status";
 import Proxy from "./Proxy";
 
-interface ICallback {
+export interface IGetProxiesCallback {
   (err: Error, body?: any): void;
 }
 
-interface ICreateProxyCallback {
+export interface ICreateProxyCallback {
   (err: Error, proxy?: Proxy): void;
 }
 
@@ -24,7 +24,7 @@ export default class Toxiproxy {
     this.host = host;
   }
 
-  getProxies(cb: ICallback) {
+  getProxies(cb: IGetProxiesCallback) {
     request
       .get(`${this.host}/proxies`)
       .end((err, res) => {
@@ -40,20 +40,20 @@ export default class Toxiproxy {
     });
   }
 
-  createProxy(body: ICreateProxyBody, cb: ICallback) {
+  createProxy(body: ICreateProxyBody, cb: ICreateProxyCallback) {
     request
       .post( `${this.host}/proxies`)
       .send(body)
       .end((err, res) => {
         if (err) {
-          cb(err);
+          cb(new Error(err.response.error.text));
           return;
         } else if (res.status !== HttpStatus.CREATED) {
-          cb(new Error(`Response status was not ${HttpStatus.CREATED}`));
+          cb(new Error(`Response status was not ${HttpStatus.CREATED}: ${res.status}`));
           return;
         }
 
-        cb(null, body);
+        cb(null, <Proxy>body);
       });
   }
 }

@@ -1,14 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "outDir": "dist",
-    "module": "commonjs",
-    "declaration": true,
-    "noImplicitAny": true,
-    "removeComments": true,
-    "moduleResolution": "node",
-    "sourceMap": true
+  "atom": {
+    "rewriteTsconfig": false
   },
-  "files": [
+  "buildOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules",
+    "typings"
   ]
 }
