@@ -15,8 +15,8 @@ test("Toxiproxy", (t: test.Test) => {
     const { toxiproxy } = setup();
 
     const createBody = <ICreateProxyBody>{
-      name: "test",
       listen: "localhost:26379",
+      name: "test",
       upstream: "localhost:6379"
     };
     toxiproxy.createProxy(createBody, (err, proxy) => {
