@@ -30,6 +30,8 @@
     "typings": "^0.7.12"
   },
   "dependencies": {
+    "bluebird": "^3.3.5",
+    "es6-promise": "^3.1.2",
     "superagent": "^1.8.3"
   }
 }

@@ -1,15 +1,8 @@
 /// <reference path="../typings/main.d.ts" />
 import * as request from "superagent";
 import * as HttpStatus from "http-status";
+import { Promise } from "es6-promise";
 import Proxy from "./Proxy";
-
-export interface IGetProxiesCallback {
-  (err: Error, body?: any): void;
-}
-
-export interface ICreateProxyCallback {
-  (err: Error, proxy?: Proxy): void;
-}
 
 export interface ICreateProxyBody {
   name: string;
@@ -18,42 +11,51 @@ export interface ICreateProxyBody {
   enabled: boolean;
 }
 
+export interface Proxies {
+  [name: string]: Proxy;
+}
+
 export default class Toxiproxy {
   host: string;
   constructor(host: string) {
     this.host = host;
   }
 
-  getProxies(cb: IGetProxiesCallback) {
-    request
-      .get(`${this.host}/proxies`)
-      .end((err, res) => {
-        if (err) {
-          cb(err);
-          return;
-        } else if (res.status !== HttpStatus.OK) {
-          cb(new Error(`Response status was not ${HttpStatus.OK}`));
-          return;
-        }
+  getProxies(): Promise<Proxies> {
+    return new Promise<Proxies>((resolve, reject) => {
+      request
+        .get(`${this.host}/proxies`)
+        .end((err, res) => {
+          if (err) {
+            reject(new Error(err.response.error.text));
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
 
-        cb(null, res.body);
+          resolve(<Proxies>res.body);
+      });
     });
   }
 
-  createProxy(body: ICreateProxyBody, cb: ICreateProxyCallback) {
-    request
-      .post( `${this.host}/proxies`)
-      .send(body)
-      .end((err, res) => {
-        if (err) {
-          cb(new Error(JSON.parse(err.response.error.text).title));
-          return;
-        } else if (res.status !== HttpStatus.CREATED) {
-          cb(new Error(`Response status was not ${HttpStatus.CREATED}: ${res.status}`));
-          return;
-        }
+  createProxy(body: ICreateProxyBody): Promise<Proxy> {
+    return new Promise<Proxy>((resolve, reject) => {
+      request
+        .post( `${this.host}/proxies`)
+        .send(body)
+        .end((err, res) => {
+          if (err) {
+            // reject(new Error(JSON.parse(err.response.error.text).title));
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.CREATED) {
+            reject(new Error(`Response status was not ${HttpStatus.CREATED}: ${res.status}`));
+            return;
+          }
 
-        cb(null, <Proxy>body);
-      });
+          resolve(<Proxy>body);
+        });
+    });
   }
 }

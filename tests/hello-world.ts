@@ -1,6 +1,6 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
+import Toxiproxy, { ICreateProxyBody, Proxies } from "../src/Toxiproxy";
 
 function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
@@ -8,6 +8,12 @@ function setup() {
   return {
     toxiproxy
   };
+}
+
+function teardown(t: test.Test) {
+  const { toxiproxy } = setup();
+  
+  t.end();
 }
 
 test("Toxiproxy", (t: test.Test) => {
@@ -19,17 +25,24 @@ test("Toxiproxy", (t: test.Test) => {
       name: "test",
       upstream: "localhost:6379"
     };
-    toxiproxy.createProxy(createBody, (err, proxy) => {
-      st.equal(err, null, "err was not null");
-      st.end();
-    });
+    toxiproxy.createProxy(createBody)
+      .then((proxy) => {
+        st.equal(proxy.name, createBody.name, "Have same name");
+        st.end();
+      })
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {
     const { toxiproxy } = setup();
-    toxiproxy.getProxies((err, body) => {
-      st.equal(err, null, "err was not null");
-      st.end();
-    });
+    toxiproxy.getProxies()
+      .then((proxies: Proxies) => st.end())
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
 });
