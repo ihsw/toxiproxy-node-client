@@ -15,9 +15,10 @@ t.test("Should update a proxy", (st: test.Test) => {
       return;
     }
 
+    proxy.enabled = false;
     proxy.update()
       .then((updatedProxy) => {
-          st.equal(proxy.name, updatedProxy.name, "Created and updated proxy have same name");
+          st.equal(proxy.enabled, updatedProxy.enabled, "Created and updated proxy have same name");
           st.end();
       })
       .catch((err) => {
