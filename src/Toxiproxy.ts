@@ -80,10 +80,10 @@ export default class Toxiproxy {
   get(name: string): Promise<Proxy> {
     return new Promise<Proxy>((resolve, reject) => {
       request
-        .get(`${this.host}/proxy/${name}`)
+        .get(`${this.host}/proxies/${name}`)
         .end((err, res) => {
           if (err) {
-            reject(new Error(JSON.parse(err.response.error.text).title));
+            reject(err);
             return;
           } else if (res.status !== HttpStatus.OK) {
             reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));

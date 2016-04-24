@@ -10,7 +10,8 @@ function setup() {
 
   const testPorts = {
     create: 5000,
-    getAll: 5001
+    get: 5001,
+    getAll: 5002
   };
 
   return {
@@ -45,6 +46,22 @@ test("Toxiproxy", (t: test.Test) => {
       toxiproxy.getAll()
         .then((proxies) => {
           st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
+        })
+        .catch((err) => {
+          st.fail(err);
+          st.end();
+        });
+    });
+  });
+
+  t.test("Should get a proxy", (st: test.Test) => {
+    const { toxiproxy, helper, testPorts } = setup();
+
+    const proxyName = "get-test";
+    helper.withProxy(st, proxyName, testPorts.get, (proxy: Proxy) => {
+      toxiproxy.get(proxyName)
+        .then((proxy) => {
+          st.equal(proxy.name, proxyName, "Proxy body and fetched proxy have same name");
         })
         .catch((err) => {
           st.fail(err);
