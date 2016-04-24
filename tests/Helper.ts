@@ -4,7 +4,7 @@ import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 
 export interface IWithProxyCallback {
-  (proxy: Proxy): void;
+  (proxy?: Proxy): void;
 }
 
 export default class Helper {
@@ -29,13 +29,17 @@ export default class Helper {
         }
 
         proxy.remove()
-          .then(() => t.end())
+          .then(() => {})
           .catch((err) => {
             t.fail(err);
           });
       })
       .catch((err) => {
         t.fail(err);
+
+        if (cb) {
+          cb();
+        }
       });
   }
 }

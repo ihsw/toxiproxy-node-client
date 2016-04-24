@@ -48,7 +48,7 @@ export default class Toxiproxy {
         .send(body)
         .end((err, res) => {
           if (err) {
-            reject(new Error(JSON.parse(err.response.error.text).title));
+            reject(err);
             return;
           } else if (res.status !== HttpStatus.CREATED) {
             reject(new Error(`Response status was not ${HttpStatus.CREATED}: ${res.status}`));
