@@ -33,36 +33,18 @@ test("Toxiproxy", (t: test.Test) => {
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
-    const { toxiproxy } = setup();
+    const { toxiproxy, helper } = setup();
 
-    const createBody = <ICreateProxyBody>{
-      listen: "localhost:50001",
-      name: "get-all-test",
-      upstream: "localhost:6379"
-    };
-    toxiproxy.createProxy(createBody)
-      .then((proxy) => {
-        st.equal(proxy.name, createBody.name, "Proxy body and created proxy have same name");
-
-        toxiproxy.getAll()
-          .then((proxies) => {
-            st.equal(proxies[createBody.name].name, createBody.name, "Proxy body and fetched proxy have same name");
-
-            toxiproxy.removeAll(proxies)
-              .then(() => st.end())
-              .catch((err) => {
-                st.fail(err);
-                st.end();
-              });
-          })
-          .catch((err) => {
-            st.fail(err);
-            st.end();
-          });
-      })
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+    const proxyName = "get-all-test";
+    helper.withProxy(st, proxyName, (proxy: Proxy) => {
+      toxiproxy.getAll()
+        .then((proxies) => {
+          st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
+        })
+        .catch((err) => {
+          st.fail(err);
+          st.end();
+        });
+    });
   });
 });
