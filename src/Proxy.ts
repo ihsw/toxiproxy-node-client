@@ -53,7 +53,6 @@ export default class Proxy {
       const payload = {
         enabled: this.enabled,
         listen: this.listen,
-        name: this.name,
         upstream: this.upstream
       };
       request
