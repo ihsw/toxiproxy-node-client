@@ -32,12 +32,10 @@ export default class Helper {
           .then(() => t.end())
           .catch((err) => {
             t.fail(err);
-            t.end();
           });
       })
       .catch((err) => {
         t.fail(err);
-        t.end();
       });
   }
 }
