@@ -1,18 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import Toxiproxy from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
-import Helper from "./Helper";
-
-function setup() {
-  const toxiproxy = new Toxiproxy("http://localhost:8474");
-  const helper = new Helper(toxiproxy);
-
-  return {
-    toxiproxy,
-    helper
-  };
-}
+import { setup } from "./Helper";
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {

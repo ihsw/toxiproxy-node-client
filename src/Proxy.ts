@@ -47,4 +47,29 @@ export default class Proxy {
         });
     });
   }
+
+  update(): Promise<Proxy> {
+    return new Promise<Proxy>((resolve, reject) => {
+      const payload = {
+        enabled: this.enabled,
+        listen: this.listen,
+        name: this.name,
+        upstream: this.upstream
+      };
+      request
+        .post(`${this.getHost()}/proxies/${this.name}`)
+        .send(payload)
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          resolve(new Proxy(this.toxiproxy, res.body));
+        });
+    });
+  }
 }

@@ -3,6 +3,16 @@ import * as test from "tape";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 
+export function setup() {
+  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const helper = new Helper(toxiproxy);
+
+  return {
+    toxiproxy,
+    helper
+  };
+}
+
 export interface IWithProxyCallback {
   (proxy?: Proxy): void;
 }
