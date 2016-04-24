@@ -1,39 +1,25 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
+import { Promise } from "es6-promise";
 import Toxiproxy, { ICreateProxyBody, Proxies } from "../src/Toxiproxy";
+import Proxy from "../src/Proxy";
+import Helper from "./Helper";
 
 function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const helper = new Helper(toxiproxy);
 
   return {
-    toxiproxy
+    toxiproxy,
+    helper
   };
 }
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
-    const { toxiproxy } = setup();
+    const { toxiproxy, helper } = setup();
 
-    const createBody = <ICreateProxyBody>{
-      listen: "localhost:50000",
-      name: "create-test",
-      upstream: "localhost:6379"
-    };
-    toxiproxy.createProxy(createBody)
-      .then((proxy) => {
-        st.equal(proxy.name, createBody.name, "Have same name");
-
-        proxy.remove()
-          .then(() => st.end())
-          .catch((err) => {
-            st.fail(err);
-            st.end();
-          });
-      })
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+    helper.withProxy(st, "create-test");
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {

@@ -76,4 +76,22 @@ export default class Toxiproxy {
       });
     });
   }
+
+  get(name: string): Promise<Proxy> {
+    return new Promise<Proxy>((resolve, reject) => {
+      request
+        .get(`${this.host}/proxy/${name}`)
+        .end((err, res) => {
+          if (err) {
+            reject(new Error(JSON.parse(err.response.error.text).title));
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          resolve(new Proxy(this, res.body));
+        });
+    });
+  }
 }
