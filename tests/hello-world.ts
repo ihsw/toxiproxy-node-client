@@ -27,16 +27,6 @@ test("Toxiproxy", (t: test.Test) => {
     });
   });
 
-  t.test("Should return a list of proxies", (st: test.Test) => {
-    const { toxiproxy } = setup();
-    toxiproxy.getAll()
-      .then((proxies: Proxies) => st.end())
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
-  });
-
   t.test("Should get all proxies", (st: test.Test) => {
     const { toxiproxy, helper } = setup();
 
