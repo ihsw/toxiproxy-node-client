@@ -14,9 +14,9 @@ export default class Helper {
     this.toxiproxy = toxiproxy;
   }
 
-  withProxy(t: test.Test, name: string, listenPort: number, cb?: IWithProxyCallback) {
+  withProxy(t: test.Test, name: string, cb?: IWithProxyCallback) {
     const createBody = <ICreateProxyBody>{
-      listen: `localhost:${listenPort}`,
+      listen: `localhost:0`,
       name: name,
       upstream: "localhost:6379"
     };

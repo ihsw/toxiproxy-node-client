@@ -8,24 +8,17 @@ function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
   const helper = new Helper(toxiproxy);
 
-  const testPorts = {
-    create: 5000,
-    get: 5001,
-    getAll: 5002
-  };
-
   return {
     toxiproxy,
-    helper,
-    testPorts
+    helper
   };
 }
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
-    const { helper, testPorts } = setup();
+    const { helper } = setup();
 
-    helper.withProxy(st, "create-test", testPorts.create);
+    helper.withProxy(st, "create-test");
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {
@@ -39,10 +32,10 @@ test("Toxiproxy", (t: test.Test) => {
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
-    const { toxiproxy, helper, testPorts } = setup();
+    const { toxiproxy, helper } = setup();
 
     const proxyName = "get-all-test";
-    helper.withProxy(st, proxyName, testPorts.getAll, (proxy: Proxy) => {
+    helper.withProxy(st, proxyName, (proxy: Proxy) => {
       toxiproxy.getAll()
         .then((proxies) => {
           st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
@@ -55,10 +48,10 @@ test("Toxiproxy", (t: test.Test) => {
   });
 
   t.test("Should get a proxy", (st: test.Test) => {
-    const { toxiproxy, helper, testPorts } = setup();
+    const { toxiproxy, helper } = setup();
 
     const proxyName = "get-test";
-    helper.withProxy(st, proxyName, testPorts.get, (proxy: Proxy) => {
+    helper.withProxy(st, proxyName, (proxy: Proxy) => {
       toxiproxy.get(proxyName)
         .then((proxy) => {
           st.equal(proxy.name, proxyName, "Proxy body and fetched proxy have same name");
