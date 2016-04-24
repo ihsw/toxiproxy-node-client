@@ -2,6 +2,7 @@
 import * as request from "superagent";
 import * as HttpStatus from "http-status";
 import * as async from "async";
+import * as _ from "lodash";
 import { Promise } from "es6-promise";
 import Proxy from "./Proxy";
 
@@ -35,7 +36,7 @@ export default class Toxiproxy {
             return;
           }
 
-          resolve(<Proxies>res.body);
+          resolve(<Proxies>_.mapValues(res.body, (body) => new Proxy(this, body)));
       });
     });
   }
@@ -54,29 +55,25 @@ export default class Toxiproxy {
             return;
           }
 
-          const { name, listen, upstream, enabled, upstream_toxics, downstream_toxics } = res.body;
-          const proxy = new Proxy(this);
-          proxy.name = name;
-          proxy.listen = listen;
-          proxy.upstream = upstream;
-          proxy.enabled = enabled;
-          proxy.upstream_toxics = upstream_toxics;
-          proxy.downstream_toxics = downstream_toxics;
-
-          resolve(proxy);
+          resolve(new Proxy(this, res.body));
         });
     });
   }
 
-  removeAll(): Promise<any> {
+  removeAll(proxies: Proxies): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      this.getProxies().then((proxies) => {
-        async.forEachOf(proxies, (proxy: Proxy, name: string, cb: Function) => {
-          proxy.remove()
-            .then(() => cb())
-            .catch((err) => cb(err));
-        }, (err) => reject(err));
-      }).catch((err) => reject(err));
+      async.forEachOf(proxies, (proxy: Proxy, name: string, cb: Function) => {
+        proxy.remove()
+          .then(() => cb())
+          .catch((err) => cb(err));
+      }, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve();
+      });
     });
   }
 }

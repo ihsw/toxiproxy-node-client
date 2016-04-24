@@ -2,6 +2,7 @@
   "name": "toxiproxy-node-client",
   "version": false,
   "dependencies": {
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519",
     "tape": "registry:npm/tape#4.0.0+20160322235547"
   },
   "ambientDependencies": {

@@ -14,8 +14,16 @@ export default class Proxy {
   upstream_toxics: any;
   downstream_toxics: any;
 
-  constructor(toxiproxy: Toxiproxy) {
+  constructor(toxiproxy: Toxiproxy, body: any) {
     this.toxiproxy = toxiproxy;
+
+    const { name, listen, upstream, enabled, upstream_toxics, downstream_toxics } = body;
+    this.name = name;
+    this.listen = listen;
+    this.upstream = upstream;
+    this.enabled = enabled;
+    this.upstream_toxics = upstream_toxics;
+    this.downstream_toxics = downstream_toxics;
   }
 
   getHost() {
