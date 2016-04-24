@@ -1,6 +1,6 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import Toxiproxy, { Proxies } from "../src/Toxiproxy";
+import Toxiproxy from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 import Helper from "./Helper";
 
