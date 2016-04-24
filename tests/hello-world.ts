@@ -8,20 +8,21 @@ function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
   const helper = new Helper(toxiproxy);
 
+  const testPorts = {
+    create: 5000,
+    getAll: 5001
+  };
+
   return {
     toxiproxy,
-    helper
+    helper,
+    testPorts
   };
 }
 
-const testPorts = {
-  create: 5000,
-  getAll: 5001
-};
-
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
-    const { helper } = setup();
+    const { helper, testPorts } = setup();
 
     helper.withProxy(st, "create-test", testPorts.create);
   });
@@ -37,7 +38,7 @@ test("Toxiproxy", (t: test.Test) => {
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
-    const { toxiproxy, helper } = setup();
+    const { toxiproxy, helper, testPorts } = setup();
 
     const proxyName = "get-all-test";
     helper.withProxy(st, proxyName, testPorts.getAll, (proxy: Proxy) => {
