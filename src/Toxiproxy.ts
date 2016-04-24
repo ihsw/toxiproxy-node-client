@@ -1,6 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
 import * as request from "superagent";
 import * as HttpStatus from "http-status";
+import * as async from "async";
 import { Promise } from "es6-promise";
 import Proxy from "./Proxy";
 
@@ -42,20 +43,40 @@ export default class Toxiproxy {
   createProxy(body: ICreateProxyBody): Promise<Proxy> {
     return new Promise<Proxy>((resolve, reject) => {
       request
-        .post( `${this.host}/proxies`)
+        .post(`${this.host}/proxies`)
         .send(body)
         .end((err, res) => {
           if (err) {
-            // reject(new Error(JSON.parse(err.response.error.text).title));
-            reject(err);
+            reject(new Error(JSON.parse(err.response.error.text).title));
             return;
           } else if (res.status !== HttpStatus.CREATED) {
             reject(new Error(`Response status was not ${HttpStatus.CREATED}: ${res.status}`));
             return;
           }
 
-          resolve(<Proxy>body);
+          const { name, listen, upstream, enabled, upstream_toxics, downstream_toxics } = res.body;
+          const proxy = new Proxy(this);
+          proxy.name = name;
+          proxy.listen = listen;
+          proxy.upstream = upstream;
+          proxy.enabled = enabled;
+          proxy.upstream_toxics = upstream_toxics;
+          proxy.downstream_toxics = downstream_toxics;
+
+          resolve(proxy);
         });
+    });
+  }
+
+  removeAll(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.getProxies().then((proxies) => {
+        async.forEachOf(proxies, (proxy: Proxy, name: string, cb: Function) => {
+          proxy.remove()
+            .then(() => cb())
+            .catch((err) => cb(err));
+        }, (err) => reject(err));
+      }).catch((err) => reject(err));
     });
   }
 }

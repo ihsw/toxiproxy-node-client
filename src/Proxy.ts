@@ -1,10 +1,42 @@
 /// <reference path="../typings/main.d.ts" />
+import * as request from "superagent";
+import * as HttpStatus from "http-status";
+import { Promise } from "es6-promise";
+import Toxiproxy from "./Toxiproxy";
 
 export default class Proxy {
-    name: string;
-    listen: string;
-    upstream: string;
-    enabled: boolean;
-    upstream_toxics: any;
-    downstream_toxics: any;
+  toxiproxy: Toxiproxy;
+
+  name: string;
+  listen: string;
+  upstream: string;
+  enabled: boolean;
+  upstream_toxics: any;
+  downstream_toxics: any;
+
+  constructor(toxiproxy: Toxiproxy) {
+    this.toxiproxy = toxiproxy;
+  }
+
+  getHost() {
+      return this.toxiproxy.host;
+  }
+
+  remove(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      request
+        .delete(`${this.getHost()}/proxies/${this.name}`)
+        .end((err, res) => {
+          if (err) {
+            reject(new Error(err.response.error.text));
+            return;
+          } else if (res.status !== HttpStatus.NO_CONTENT) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          resolve();
+        });
+    });
+  }
 }

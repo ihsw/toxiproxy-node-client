@@ -10,9 +10,8 @@ function setup() {
   };
 }
 
-function teardown(t: test.Test) {
-  const { toxiproxy } = setup();
-  
+function failEnd(t: test.Test, err: any) {
+  t.fail(err);
   t.end();
 }
 
@@ -28,21 +27,18 @@ test("Toxiproxy", (t: test.Test) => {
     toxiproxy.createProxy(createBody)
       .then((proxy) => {
         st.equal(proxy.name, createBody.name, "Have same name");
-        st.end();
+
+        proxy.remove()
+          .then(() => st.end())
+          .catch((err) => failEnd(st, err));
       })
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+      .catch((err) => failEnd(st, err));
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {
     const { toxiproxy } = setup();
     toxiproxy.getProxies()
       .then((proxies: Proxies) => st.end())
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+      .catch((err) => failEnd(st, err));
   });
 });
