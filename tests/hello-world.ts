@@ -10,11 +10,6 @@ function setup() {
   };
 }
 
-function failEnd(t: test.Test, err: any) {
-  t.fail(err);
-  t.end();
-}
-
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
     const { toxiproxy } = setup();
@@ -30,16 +25,25 @@ test("Toxiproxy", (t: test.Test) => {
 
         proxy.remove()
           .then(() => st.end())
-          .catch((err) => failEnd(st, err));
+          .catch((err) => {
+            st.fail(err);
+            st.end();
+          });
       })
-      .catch((err) => failEnd(st, err));
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {
     const { toxiproxy } = setup();
     toxiproxy.getProxies()
       .then((proxies: Proxies) => st.end())
-      .catch((err) => failEnd(st, err));
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
@@ -61,31 +65,18 @@ test("Toxiproxy", (t: test.Test) => {
             toxiproxy.removeAll(proxies)
               .then(() => st.end())
               .catch((err) => {
-                console.log(err);
-                failEnd(st, err);
+                st.fail(err);
+                st.end();
               });
           })
-          .catch((err) => failEnd(st, err));
+          .catch((err) => {
+            st.fail(err);
+            st.end();
+          });
       })
-      .catch((err) => failEnd(st, err));
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
-
-  // t.test("Should remove all proxies", (st: test.Test) => {
-  //   const { toxiproxy } = setup();
-
-  //   const createBody = <ICreateProxyBody>{
-  //     listen: "localhost:26379",
-  //     name: "remove-all-test",
-  //     upstream: "localhost:6379"
-  //   };
-  //   toxiproxy.createProxy(createBody)
-  //     .then((proxy) => {
-  //       st.equal(proxy.name, createBody.name, "Have same name");
-
-  //       toxiproxy.removeAll()
-  //         .then(() => st.end())
-  //         .catch((err) => failEnd(st, err));
-  //     })
-  //     .catch((err) => failEnd(st, err));
-  // });
 });
