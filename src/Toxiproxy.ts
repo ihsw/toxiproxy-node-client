@@ -23,7 +23,7 @@ export default class Toxiproxy {
     this.host = host;
   }
 
-  getProxies(): Promise<Proxies> {
+  getAll(): Promise<Proxies> {
     return new Promise<Proxies>((resolve, reject) => {
       request
         .get(`${this.host}/proxies`)

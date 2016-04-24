@@ -38,7 +38,7 @@ test("Toxiproxy", (t: test.Test) => {
 
   t.test("Should return a list of proxies", (st: test.Test) => {
     const { toxiproxy } = setup();
-    toxiproxy.getProxies()
+    toxiproxy.getAll()
       .then((proxies: Proxies) => st.end())
       .catch((err) => {
         st.fail(err);
@@ -58,7 +58,7 @@ test("Toxiproxy", (t: test.Test) => {
       .then((proxy) => {
         st.equal(proxy.name, createBody.name, "Proxy body and created proxy have same name");
 
-        toxiproxy.getProxies()
+        toxiproxy.getAll()
           .then((proxies) => {
             st.equal(proxies[createBody.name].name, createBody.name, "Proxy body and fetched proxy have same name");
 
