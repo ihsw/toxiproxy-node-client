@@ -1,7 +1,6 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import { Promise } from "es6-promise";
-import Toxiproxy, { ICreateProxyBody, Proxies } from "../src/Toxiproxy";
+import Toxiproxy, { Proxies } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 import Helper from "./Helper";
 
@@ -15,11 +14,16 @@ function setup() {
   };
 }
 
+const testPorts = {
+  create: 5000,
+  getAll: 5001
+};
+
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
-    const { toxiproxy, helper } = setup();
+    const { helper } = setup();
 
-    helper.withProxy(st, "create-test");
+    helper.withProxy(st, "create-test", testPorts.create);
   });
 
   t.test("Should return a list of proxies", (st: test.Test) => {
@@ -36,7 +40,7 @@ test("Toxiproxy", (t: test.Test) => {
     const { toxiproxy, helper } = setup();
 
     const proxyName = "get-all-test";
-    helper.withProxy(st, proxyName, (proxy: Proxy) => {
+    helper.withProxy(st, proxyName, testPorts.getAll, (proxy: Proxy) => {
       toxiproxy.getAll()
         .then((proxies) => {
           st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
