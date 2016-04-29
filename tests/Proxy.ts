@@ -58,19 +58,4 @@ test("Proxy", (t: test.Test) => {
         .catch((err) => st.end(err));
     });
   });
-
-  t.test("Should create a toxic", (st: test.Test) => {
-    const { helper } = setup();
-
-    const proxyName = "update-test";
-    helper.withProxy(st, proxyName, (err, proxy) => {
-      if (err) {
-        return st.end(err);
-      }
-
-      proxy.refreshToxics()
-        .then((updatedProxy) => st.end())
-        .catch((err) => st.end(err));
-    });
-  });
 });

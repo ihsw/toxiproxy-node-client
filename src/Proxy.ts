@@ -22,7 +22,7 @@ export default class Proxy {
     this.listen = listen;
     this.upstream = upstream;
     this.enabled = enabled;
-    this.toxics = toxics.map((v: any) => new Toxic(this, v));
+    this.toxics = toxics.map((v: any) => new Toxic(this, v.type, v));
   }
 
   getHost() {
@@ -84,6 +84,36 @@ export default class Proxy {
             return;
           }
 
+          resolve(this);
+        });
+    });
+  }
+
+  addToxic(toxic: Toxic): Promise<Proxy> {
+    return new Promise<Proxy>((resolve, reject) => {
+      const payload = {
+        attributes: toxic.attributes,
+        name: toxic.name,
+        stream: toxic.stream,
+        toxicity: toxic.toxicity,
+        type: toxic.type
+      };
+      request
+        .post(`${this.getHost()}/proxies/${this.name}/toxics`)
+        .send(payload)
+        .end((err, res) => {
+          if (err) {
+            return reject(err);
+          } else if (res.status !== HttpStatus.OK) {
+            return reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+          }
+
+          this.toxics.push(new Toxic(this, res.body.type, {
+            attributes: res.body.attributes,
+            name: res.body.name,
+            stream: res.body.stream,
+            toxicity: res.body.toxicity
+          }));
           resolve(this);
         });
     });
