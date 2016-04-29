@@ -3,6 +3,7 @@ import * as request from "superagent";
 import * as HttpStatus from "http-status";
 import { Promise } from "es6-promise";
 import Toxiproxy from "./Toxiproxy";
+import Toxic from "./Toxic";
 
 export default class Proxy {
   toxiproxy: Toxiproxy;
@@ -11,7 +12,7 @@ export default class Proxy {
   listen: string;
   upstream: string;
   enabled: boolean;
-  toxics: any[];
+  toxics: Toxic[];
 
   constructor(toxiproxy: Toxiproxy, body: any) {
     this.toxiproxy = toxiproxy;
@@ -21,7 +22,7 @@ export default class Proxy {
     this.listen = listen;
     this.upstream = upstream;
     this.enabled = enabled;
-    this.toxics = toxics;
+    this.toxics = toxics.map((v: any) => new Toxic(this, v));
   }
 
   getHost() {
