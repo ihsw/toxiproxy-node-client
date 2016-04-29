@@ -11,19 +11,17 @@ export default class Proxy {
   listen: string;
   upstream: string;
   enabled: boolean;
-  upstream_toxics: any;
-  downstream_toxics: any;
+  toxics: any[];
 
   constructor(toxiproxy: Toxiproxy, body: any) {
     this.toxiproxy = toxiproxy;
 
-    const { name, listen, upstream, enabled, upstream_toxics, downstream_toxics } = body;
+    const { name, listen, upstream, enabled, toxics } = body;
     this.name = name;
     this.listen = listen;
     this.upstream = upstream;
     this.enabled = enabled;
-    this.upstream_toxics = upstream_toxics;
-    this.downstream_toxics = downstream_toxics;
+    this.toxics = toxics;
   }
 
   getHost() {
