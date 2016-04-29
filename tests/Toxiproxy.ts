@@ -1,6 +1,5 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import Proxy from "../src/Proxy";
 import { setup } from "./Helper";
 
 test("Toxiproxy", (t: test.Test) => {
