@@ -54,4 +54,24 @@ test("Proxy", (t: test.Test) => {
         st.end();
       });
   });
+
+  t.test("Should refresh toxics", (st: test.Test) => {
+    const { helper } = setup();
+
+    const proxyName = "update-test";
+    helper.withProxy(st, proxyName, (proxy: Proxy) => {
+      if (!proxy) {
+        st.fail("No proxy returned");
+        st.end();
+        return;
+      }
+
+      proxy.refreshToxics()
+        .then((updatedProxy) => st.end())
+        .catch((err) => {
+          st.fail(err);
+          st.end();
+        });
+    });
+  });
 });

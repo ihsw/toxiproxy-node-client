@@ -70,4 +70,22 @@ export default class Proxy {
         });
     });
   }
+
+  refreshToxics(): Promise<Proxy> {
+    return new Promise<Proxy>((resolve, reject) => {
+      request
+        .get(`${this.getHost()}/proxies/${this.name}/toxics`)
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          resolve(this);
+        });
+    });
+  }
 }
