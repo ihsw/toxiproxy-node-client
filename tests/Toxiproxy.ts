@@ -14,7 +14,7 @@ test("Toxiproxy", (t: test.Test) => {
 
     const proxyName = "get-all-test";
     helper.withProxy(st, proxyName, (err, proxy) => {
-      if (!proxy) {
+      if (err) {
         return st.end(err);
       }
 
