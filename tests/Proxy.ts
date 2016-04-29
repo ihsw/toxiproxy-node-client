@@ -9,11 +9,9 @@ test("Proxy", (t: test.Test) => {
     const { helper } = setup();
 
     const proxyName = "update-test";
-    helper.withProxy(st, proxyName, (proxy: Proxy) => {
-      if (!proxy) {
-        st.fail("No proxy returned");
-        st.end();
-        return;
+    helper.withProxy(st, proxyName, (err, proxy) => {
+      if (err) {
+        return st.end(err);
       }
 
       proxy.enabled = false;
@@ -22,10 +20,7 @@ test("Proxy", (t: test.Test) => {
           st.equal(proxy.enabled, updatedProxy.enabled, "Created and updated proxy have same name");
           st.end();
         })
-        .catch((err) => {
-          st.fail(err);
-          st.end();
-        });
+        .catch((err) => st.end(err));
     });
   });
 
@@ -44,34 +39,38 @@ test("Proxy", (t: test.Test) => {
 
         proxy.remove()
           .then(() => st.end())
-          .catch((err) => {
-            st.fail(err);
-            st.end();
-          });
+          .catch((err) => st.end(err));
       })
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+      .catch((err) => st.end(err));
   });
 
   t.test("Should refresh toxics", (st: test.Test) => {
     const { helper } = setup();
 
-    const proxyName = "update-test";
-    helper.withProxy(st, proxyName, (proxy: Proxy) => {
-      if (!proxy) {
-        st.fail("No proxy returned");
-        st.end();
-        return;
+    const proxyName = "refresh-test";
+    helper.withProxy(st, proxyName, (err, proxy) => {
+      if (err) {
+        return st.end(err);
       }
 
       proxy.refreshToxics()
         .then((updatedProxy) => st.end())
-        .catch((err) => {
-          st.fail(err);
-          st.end();
-        });
+        .catch((err) => st.end(err));
+    });
+  });
+
+  t.test("Should create a toxic", (st: test.Test) => {
+    const { helper } = setup();
+
+    const proxyName = "update-test";
+    helper.withProxy(st, proxyName, (err, proxy) => {
+      if (err) {
+        return st.end(err);
+      }
+
+      proxy.refreshToxics()
+        .then((updatedProxy) => st.end())
+        .catch((err) => st.end(err));
     });
   });
 });

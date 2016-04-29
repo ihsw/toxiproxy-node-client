@@ -7,24 +7,16 @@ test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
     const { helper } = setup();
 
-    helper.withProxy(st, "create-test", (proxy: Proxy) => {
-      if (!proxy) {
-        st.fail("No proxy returned");
-      }
-
-      st.end();
-    });
+    helper.withProxy(st, "create-test", (err, proxy) => st.end(err));
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
     const { toxiproxy, helper } = setup();
 
     const proxyName = "get-all-test";
-    helper.withProxy(st, proxyName, (proxy: Proxy) => {
+    helper.withProxy(st, proxyName, (err, proxy) => {
       if (!proxy) {
-        st.fail("No proxy returned");
-        st.end();
-        return;
+        return st.end(err);
       }
 
       toxiproxy.getAll()
@@ -32,10 +24,7 @@ test("Toxiproxy", (t: test.Test) => {
           st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
           st.end();
         })
-        .catch((err) => {
-          st.fail(err);
-          st.end();
-        });
+        .catch((err) => st.end(err));
     });
   });
 
@@ -43,11 +32,9 @@ test("Toxiproxy", (t: test.Test) => {
     const { toxiproxy, helper } = setup();
 
     const proxyName = "get-test";
-    helper.withProxy(st, proxyName, (proxy: Proxy) => {
-      if (!proxy) {
-        st.fail("No proxy returned");
-        st.end();
-        return;
+    helper.withProxy(st, proxyName, (err, proxy) => {
+      if (err) {
+        return st.end(err);
       }
 
       toxiproxy.get(proxyName)
@@ -55,10 +42,7 @@ test("Toxiproxy", (t: test.Test) => {
           st.equal(proxy.name, proxyName, "Proxy body and fetched proxy have same name");
           st.end();
         })
-        .catch((err) => {
-          st.fail(err);
-          st.end();
-        });
+        .catch((err) => st.end(err));
     });
   });
 });

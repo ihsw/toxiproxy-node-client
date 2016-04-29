@@ -14,7 +14,7 @@ export function setup() {
 }
 
 export interface IWithProxyCallback {
-  (proxy?: Proxy): void;
+  (err?: Error, proxy?: Proxy): void;
 }
 
 export default class Helper {
@@ -35,21 +35,13 @@ export default class Helper {
         t.equal(proxy.name, createBody.name, "Create-body and proxy have same name");
 
         if (cb) {
-          cb(proxy);
+          cb(null, proxy);
         }
 
         proxy.remove()
           .then(() => {})
-          .catch((err) => {
-            t.fail(err);
-          });
+          .catch((err) => cb(err, null));
       })
-      .catch((err) => {
-        t.fail(err);
-
-        if (cb) {
-          cb();
-        }
-      });
+      .catch((err) => cb(err, null));
   }
 }
