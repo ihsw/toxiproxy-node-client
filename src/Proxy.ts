@@ -3,7 +3,15 @@ import * as request from "superagent";
 import * as HttpStatus from "http-status";
 import { Promise } from "es6-promise";
 import Toxiproxy from "./Toxiproxy";
-import Toxic from "./Toxic";
+import Toxic, { Type, Direction, IAttributes } from "./Toxic";
+
+export interface ICreateToxicBody {
+  name: string;
+  type: Type;
+  stream: Direction;
+  toxicity: number;
+  attributes: IAttributes;
+}
 
 export default class Proxy {
   toxiproxy: Toxiproxy;
@@ -89,9 +97,9 @@ export default class Proxy {
     });
   }
 
-  addToxic(toxic: Toxic): Promise<Proxy> {
-    return new Promise<Proxy>((resolve, reject) => {
-      const payload = {
+  addToxic(toxic: Toxic): Promise<Toxic> {
+    return new Promise<Toxic>((resolve, reject) => {
+      const payload = <ICreateToxicBody>{
         attributes: toxic.attributes,
         name: toxic.name,
         stream: toxic.stream,
@@ -103,18 +111,19 @@ export default class Proxy {
         .send(payload)
         .end((err, res) => {
           if (err) {
-            return reject(err);
+            return reject(new Error(err.response.error.text));
           } else if (res.status !== HttpStatus.OK) {
             return reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
           }
 
-          this.toxics.push(new Toxic(this, res.body.type, {
+          const toxic = new Toxic(this, res.body.type, {
             attributes: res.body.attributes,
             name: res.body.name,
             stream: res.body.stream,
             toxicity: res.body.toxicity
-          }));
-          resolve(this);
+          });
+          this.toxics.push(toxic);
+          resolve(toxic);
         });
     });
   }

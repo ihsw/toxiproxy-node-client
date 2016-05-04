@@ -13,9 +13,13 @@ test("Toxic", (t: test.Test) => {
         return st.end(err);
       }
 
-      proxy.addToxic(new Toxic(proxy, "latency", {}))
-        .then((updatedProxy) => st.end())
-        .catch((err) => st.end(err.response.error.text));
+      helper.withToxic(proxy, "latency")
+        .then((toxic: Toxic) => {
+          toxic.remove()
+            .then(() => st.end())
+            .catch((err) => st.end(err));
+        })
+        .catch((err) => st.end(err));
     });
   });
 });
