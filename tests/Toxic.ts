@@ -1,6 +1,5 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
-import Toxic from "../src/Toxic";
 import { setup } from "./Helper";
 
 test("Toxic", (t: test.Test) => {
@@ -8,14 +7,15 @@ test("Toxic", (t: test.Test) => {
     const { helper } = setup();
 
     const proxyName = "create-toxic-test";
-    helper.withProxy(st, proxyName, (err, proxy) => {
-      if (err) {
-        return st.end(err);
-      }
-
-      proxy.addToxic(new Toxic(proxy, "latency", {}))
-        .then((updatedProxy) => st.end())
-        .catch((err) => st.end(err.response.error.text));
-    });
+    helper.withProxy(proxyName, (proxy) => {
+        return new Promise<any>((resolve, reject) => {
+          helper.withToxic(proxy, "latency").then(resolve).catch(reject);
+        });
+      })
+      .then(st.end)
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
   });
 });

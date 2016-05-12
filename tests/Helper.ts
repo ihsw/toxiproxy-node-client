@@ -1,7 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
-import * as test from "tape";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
+import Toxic, { Type as ToxicType } from "../src/Toxic";
 
 export function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
@@ -14,7 +14,11 @@ export function setup() {
 }
 
 export interface IWithProxyCallback {
-  (err?: Error, proxy?: Proxy): void;
+  (proxy: Proxy): Promise<any>;
+}
+
+export interface IWithToxicCallback {
+  (toxic?: Toxic): Promise<any>;
 }
 
 export default class Helper {
@@ -24,24 +28,40 @@ export default class Helper {
     this.toxiproxy = toxiproxy;
   }
 
-  withProxy(t: test.Test, name: string, cb?: IWithProxyCallback) {
-    const createBody = <ICreateProxyBody>{
-      listen: `localhost:0`,
-      name: name,
-      upstream: "localhost:6379"
-    };
-    this.toxiproxy.createProxy(createBody)
-      .then((proxy) => {
-        t.equal(proxy.name, createBody.name, "Create-body and proxy have same name");
+  withProxy(name: string, cb?: IWithProxyCallback): Promise<Proxy> {
+    if (!cb) {
+      cb = (proxy) => Promise.resolve();
+    }
 
-        if (cb) {
-          cb(null, proxy);
-        }
+    return new Promise<Proxy>((resolve, reject) => {
+      const createBody = <ICreateProxyBody>{
+        listen: `localhost:0`,
+        name: name,
+        upstream: "localhost:6379"
+      };
+      this.toxiproxy.createProxy(createBody)
+        .then((proxy) => {
+          cb(proxy)
+            .then(() => proxy.remove().then(resolve).catch(reject))
+            .catch(reject);
+        })
+        .catch(reject);
+    });
+  }
 
-        proxy.remove()
-          .then(() => {})
-          .catch((err) => cb(err, null));
-      })
-      .catch((err) => cb(err, null));
+  withToxic(proxy: Proxy, type: ToxicType, cb?: IWithToxicCallback): Promise<Toxic> {
+    if (!cb) {
+      cb = (toxic) => Promise.resolve();
+    }
+
+    return new Promise<Toxic>((resolve, reject) => {
+      proxy.addToxic(new Toxic(proxy, type, {}))
+        .then((toxic) => {
+          cb(toxic)
+            .then(() => toxic.remove().then(resolve).catch(reject))
+            .catch(reject);
+        })
+        .catch(reject);
+    });
   }
 }
