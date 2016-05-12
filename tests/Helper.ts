@@ -1,5 +1,4 @@
 /// <reference path="../typings/main.d.ts" />
-import * as test from "tape";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 import Toxic, { Type as ToxicType } from "../src/Toxic";
@@ -19,7 +18,7 @@ export interface IWithProxyCallback {
 }
 
 export interface IWithToxicCallback {
-  (toxic?: Toxic): void;
+  (toxic?: Toxic): Promise<any>;
 }
 
 export default class Helper {
@@ -29,7 +28,11 @@ export default class Helper {
     this.toxiproxy = toxiproxy;
   }
 
-  withProxy(t: test.Test, name: string, cb?: IWithProxyCallback): Promise<Proxy> {
+  withProxy(name: string, cb?: IWithProxyCallback): Promise<Proxy> {
+    if (!cb) {
+      cb = (proxy) => Promise.resolve();
+    }
+
     return new Promise<Proxy>((resolve, reject) => {
       const createBody = <ICreateProxyBody>{
         listen: `localhost:0`,
@@ -38,25 +41,27 @@ export default class Helper {
       };
       this.toxiproxy.createProxy(createBody)
         .then((proxy) => {
-          if (cb) {
-            cb(proxy)
-              .then(resolve)
-              .catch(reject);
-          }
-
-          proxy.remove()
-            .then(resolve)
+          cb(proxy)
+            .then(() => proxy.remove().then(resolve).catch(reject))
             .catch(reject);
         })
         .catch(reject);
     });
   }
 
-  withToxic(proxy: Proxy, type: ToxicType): Promise<Toxic> {
+  withToxic(proxy: Proxy, type: ToxicType, cb?: IWithToxicCallback): Promise<Toxic> {
+    if (!cb) {
+      cb = (toxic) => Promise.resolve();
+    }
+
     return new Promise<Toxic>((resolve, reject) => {
       proxy.addToxic(new Toxic(proxy, type, {}))
-        .then((toxic) => setTimeout(() => resolve(toxic)))
-        .catch((err) => reject(err));
+        .then((toxic) => {
+          cb(toxic)
+            .then(() => toxic.remove().then(resolve).catch(reject))
+            .catch(reject);
+        })
+        .catch(reject);
     });
   }
 }
