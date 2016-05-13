@@ -37,10 +37,14 @@ export default class Proxy {
       return this.toxiproxy.host;
   }
 
+  getPath() {
+    return `${this.getHost()}/proxies/${this.name}`;
+  }
+
   remove(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       request
-        .delete(`${this.getHost()}/proxies/${this.name}`)
+        .delete(this.getPath())
         .end((err, res) => {
           if (err) {
             reject(new Error(err.response.error.text));
@@ -63,7 +67,7 @@ export default class Proxy {
         upstream: this.upstream
       };
       request
-        .post(`${this.getHost()}/proxies/${this.name}`)
+        .post(this.getPath())
         .send(payload)
         .end((err, res) => {
           if (err) {
@@ -82,7 +86,7 @@ export default class Proxy {
   refreshToxics(): Promise<Proxy> {
     return new Promise<Proxy>((resolve, reject) => {
       request
-        .get(`${this.getHost()}/proxies/${this.name}/toxics`)
+        .get(`${this.getPath()}/toxics`)
         .end((err, res) => {
           if (err) {
             reject(err);
