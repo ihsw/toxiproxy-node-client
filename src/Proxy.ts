@@ -30,7 +30,7 @@ export default class Proxy {
     this.listen = listen;
     this.upstream = upstream;
     this.enabled = enabled;
-    this.toxics = toxics.map((v: any) => new Toxic(this, v.type, v));
+    this.toxics = toxics.map((v: any) => new Toxic(this, v));
   }
 
   getHost() {
@@ -116,11 +116,12 @@ export default class Proxy {
             return reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
           }
 
-          const toxic = new Toxic(this, res.body.type, {
+          const toxic = new Toxic(this, {
             attributes: res.body.attributes,
             name: res.body.name,
             stream: res.body.stream,
-            toxicity: res.body.toxicity
+            toxicity: res.body.toxicity,
+            type: res.body.type
           });
           this.toxics.push(toxic);
           resolve(toxic);

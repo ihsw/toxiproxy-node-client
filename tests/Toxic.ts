@@ -18,4 +18,26 @@ test("Toxic", (t: test.Test) => {
         st.end();
       });
   });
+
+  t.test("Should get refresh", (st: test.Test) => {
+    const { helper } = setup();
+
+    const proxyName = "toxic-refresh-test";
+    helper.withProxy(proxyName, (proxy) => {
+        return new Promise<any>((pResolve, pReject) => {
+          helper.withToxic(proxy, "latency", (toxic) => {
+            return new Promise<any>((tResolve, tReject) => {
+              toxic.refresh().then(tResolve).catch(tReject);
+            });
+          })
+            .then(pResolve)
+            .catch(pReject);
+        });
+      })
+      .then(st.end)
+      .catch((err) => {
+        st.fail(err);
+        st.end();
+      });
+  });
 });

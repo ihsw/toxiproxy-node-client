@@ -16,6 +16,14 @@ export interface IAttributes {
   [name: string]: string;
 }
 
+export interface IBody {
+  name: string;
+  stream: Direction;
+  type: Type;
+  toxicity: number;
+  attributes: IAttributes;
+}
+
 export default class Toxic {
   proxy: Proxy;
 
@@ -25,12 +33,15 @@ export default class Toxic {
   toxicity: number;
   attributes: IAttributes;
 
-  constructor(proxy: Proxy, type: Type, body: any) {
+  constructor(proxy: Proxy, body: IBody) {
     this.proxy = proxy;
-    this.type = type;
+    this.parseBody(body);
+  }
 
-    const { name, stream, toxicity, attributes } = body;
+  parseBody(body: IBody) {
+    const { name, type, stream, toxicity, attributes } = body;
     this.name = name;
+    this.type = type;
     this.stream = stream;
     this.toxicity = toxicity;
     this.attributes = attributes;
@@ -40,20 +51,43 @@ export default class Toxic {
     return this.proxy.getHost();
   }
 
+  getPath() {
+    return `${this.getHost()}/proxies/${this.proxy.name}/toxics/${this.name}`;
+  }
+
   remove(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       request
-        .delete(`${this.getHost()}/proxies/${this.proxy.name}/toxics/${this.name}`)
+        .delete(this.getPath())
         .end((err, res) => {
           if (err) {
             reject(err);
             return;
           } else if (res.status !== HttpStatus.NO_CONTENT) {
-            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
             return;
           }
 
           resolve({});
+        });
+    });
+  }
+
+  refresh(): Promise<Toxic> {
+    return new Promise<Toxic>((resolve, reject) => {
+      request
+        .get(this.getPath())
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          this.parseBody(res.body);
+          resolve(this);
         });
     });
   }

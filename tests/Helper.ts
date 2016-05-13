@@ -1,7 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
-import Toxic, { Type as ToxicType } from "../src/Toxic";
+import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
 
 export function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
@@ -55,7 +55,7 @@ export default class Helper {
     }
 
     return new Promise<Toxic>((resolve, reject) => {
-      proxy.addToxic(new Toxic(proxy, type, {}))
+      proxy.addToxic(new Toxic(proxy, <IToxicBody>{ type: type }))
         .then((toxic) => {
           cb(toxic)
             .then(() => toxic.remove().then(resolve).catch(reject))
