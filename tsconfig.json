@@ -5,13 +5,13 @@
   "buildOnSave": false,
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": true,
+    "declaration": false,
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "dist",
     "removeComments": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es5"
   },
   "exclude": [
