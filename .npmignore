@@ -3,4 +3,5 @@ typings
 npm-debug.log
 .vscode
 
-dist
+tests
+src
