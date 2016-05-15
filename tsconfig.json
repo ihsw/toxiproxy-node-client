@@ -5,7 +5,7 @@
   "buildOnSave": false,
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
