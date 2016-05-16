@@ -8,3 +8,12 @@ before_install:
 before_script:
 - typings install
 - npm run lint
+
+deploy:
+  provider: npm
+  email: iamhiddensomewhere@gmail.com
+  api_key:
+    secure: e11ZDUqbesGorpJ6aSpRNXpD2k8k57vMvkdeTHbfVFnskyDX9uaPxAuesXsFQPhwn+E4Pe3xGSTV0g0iDYx1YphrbVoEZwvahYFlsG20bcqxnqLJu2SSh+QtqOgEQF0I45Q9NhrGHNshbQD9DT/Ns52EusG9j3Z8Mwreapq9I7c7WyMc1/FMvmtnj7QL/BDXDkwsJwn49aP5x50jlpWTUsGKSdEBHL2Io0rOc1mUqrSMSETTy00rIWIxLOc4o3Qw9lr8wsmLYNSSjDQyWFD24Ff8YUJaWZSiMQ9I6RbO9Xpm5nTaPehZY4GNIrAeLBQjaKcdNOFaCQXAepzAFtM7CpxqXzamLprLqkA+OcfQraqwJ/AkK8P17xMAHM0nlssUqddMAJmL/utct8A7idvo+l7fCNvscLcK21ZXaeghKSsbp7MyvbrkNG9I5DLvOw32WnjuEmxAh2Q8a1i9wdgxtY2CS/YgfguWKcgH+x7XAm1eLfMJYmK4Cy0kwGWsPzR0ieNc4xZLuemCmR2wmmfy0XfPj38fhyKp7h4S3Btp9tAXhCyCFtpTOHj9ZSjV1g6a7hitcIocKL7DAZ8EhzyqV7o79cNR2VECIU42ZVHB5TRc1xid/6J9gJB8CtgWfWRO5d1uh3hw+vT2NVWidVgZtparairz4Wyiy8OQqN/CCPM=
+  on:
+    tags: true
+    repo: ihsw/toxiproxy-node-client
