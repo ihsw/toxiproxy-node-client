@@ -1,6 +1,6 @@
 {
   "name": "toxiproxy-node-client",
-  "version": "v0.0.15",
+  "version": "v1.0.0",
   "description": "Node Client for Toxiproxy",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
