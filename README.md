@@ -22,7 +22,7 @@ var createBody = {
   listen: "localhost:0",
   upstream: "localhost:6379"
 };
-var proxy = toxiproxy.createProxy(createBody);
+var proxy = toxiproxy.createProxy(createBody)
   .then((proxy) => {
     var options = {
       name: "bandwidth",
@@ -51,7 +51,7 @@ const createBody = <ICreateProxyBody>{
   listen: "localhost:0",
   upstream: "localhost:6379"
 };
-const proxy = toxiproxy.createProxy(createBody);
+const proxy = toxiproxy.createProxy(createBody)
   .then((proxy) => {
     const options = <ICreateToxicBody>{
       name: "bandwidth",
