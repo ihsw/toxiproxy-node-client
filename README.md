@@ -14,19 +14,37 @@ Once that is installed and you have added `toxiproxy-node-client` to your `packa
 
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
+JavaScript (ES5) Usage
+---------
 ```js
 "use strict";
-const Toxiproxy = require("toxiproxy-node-client").Toxiproxy;
+var Toxiproxy = require("toxiproxy-node-client").Toxiproxy;
+
+var toxiproxy = new Toxiproxy("http://localhost:8474");
+var createBody = {
+  name: "ayy",
+  listen: "localhost:0",
+  upstream: "localhost:6379"
+};
+var proxy = toxiproxy.createProxy(createBody)
+  .then((proxy) => console.log(proxy))
+  .catch((err) => console.error(err));
+```
+
+TypeScript Usage
+----------------
+```typescript
+import { Toxiproxy, ICreateProxyBody } from "toxiproxy-node-client";
 
 const toxiproxy = new Toxiproxy("http://localhost:8474");
-const createBody = {
+const createBody = <ICreateProxyBody>{
   name: "ayy",
   listen: "localhost:0",
   upstream: "localhost:6379"
 };
 const proxy = toxiproxy.createProxy(createBody)
-  .then((proxy) => console.log(proxy))
-  .catch((err) => console.error(err));
+  .then(console.log)
+  .catch(console.error);
 ```
 
 Documentation
