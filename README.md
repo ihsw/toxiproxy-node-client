@@ -1,20 +1,14 @@
-Toxiproxy Node Client
-=====================
-
+# Toxiproxy Node Client
 [![Build Status](https://travis-ci.org/ihsw/toxiproxy-node-client.svg?branch=master)](https://travis-ci.org/ihsw/toxiproxy-node-client)
 
 [Toxiproxy](https://github.com/shopify/toxiproxy) makes it easy and trivial to test network conditions, for example low-bandwidth and high-latency situations. `toxiproxy-node-client` includes everything needed to get started with configuring Toxiproxy upstream connection and listen endpoints.
 
-Installing via NPM
-------------------
-
+## Installing via NPM
 The recommended way to install `toxiproxy-node-client` is through [NPM](https://www.npmjs.com/).
 
 Once that is installed and you have added `toxiproxy-node-client` to your `package.json` configuration, you can require the package and start using the library.
 
-JavaScript (ES5) Usage
----------
-
+## JavaScript (ES5) Usage
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```js
@@ -44,9 +38,7 @@ var proxy = toxiproxy.createProxy(createBody);
   .catch(console.error);
 ```
 
-TypeScript Usage
-----------------
-
+## TypeScript Usage
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```typescript
@@ -75,7 +67,5 @@ const proxy = toxiproxy.createProxy(createBody);
   .catch(console.error);
 ```
 
-Documentation
--------------
-
+## Documentation
 Additional examples can be found in the `examples` directory for expected usage.
