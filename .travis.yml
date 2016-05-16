@@ -3,7 +3,8 @@ language: node_js
 
 before_install:
 - wget -O toxiproxy_2.0.0_amd64.deb https://github.com/Shopify/toxiproxy/releases/download/v2.0.0/toxiproxy_2.0.0_amd64.deb
-- sudo dpkg -i ./toxiproxy_2.0.0_amd64.deb
+- sudo dpkg -i ./toxiproxy_*_amd64.deb
+- rm toxiproxy_*_amd64.deb
 - sudo service toxiproxy start
 before_script:
 - typings install
