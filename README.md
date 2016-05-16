@@ -61,8 +61,8 @@ const proxy = toxiproxy.createProxy(createBody)
       toxicity: 1
     };
     proxy.addToxic(new Toxic(proxy, options))
-      .then((toxic) => console.log(toxic))
-      .catch((err) => console.error(err));
+      .then(console.log)
+      .catch(console.error);
   })
   .catch(console.error);
 ```
