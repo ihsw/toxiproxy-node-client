@@ -13,7 +13,7 @@ export type Type = "latency"
   | "slicer";
 
 export interface IAttributes {
-  [name: string]: string;
+  [name: string]: number;
 }
 
 export interface IBody {
