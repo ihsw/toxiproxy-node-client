@@ -9,6 +9,7 @@ before_script:
 - typings install
 - npm run lint
 
+before_deploy: npm run build
 deploy:
   provider: npm
   email: iamhiddensomewhere@gmail.com
