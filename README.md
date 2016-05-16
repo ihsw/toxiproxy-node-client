@@ -35,7 +35,7 @@ var proxy = toxiproxy.createProxy(createBody)
       .then((toxic) => console.log(toxic))
       .catch((err) => console.error(err));
   })
-  .catch(console.error);
+  .catch((err) => console.error);
 ```
 
 ## TypeScript Usage
