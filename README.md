@@ -1,12 +1,12 @@
 Toxiproxy Node Client
-====================
+=====================
 
 [![Build Status](https://travis-ci.org/ihsw/toxiproxy-node-client.svg?branch=master)](https://travis-ci.org/ihsw/toxiproxy-node-client)
 
 [Toxiproxy](https://github.com/shopify/toxiproxy) makes it easy and trivial to test network conditions, for example low-bandwidth and high-latency situations. `toxiproxy-node-client` includes everything needed to get started with configuring Toxiproxy upstream connection and listen endpoints.
 
 Installing via NPM
------------------------
+------------------
 
 The recommended way to install `toxiproxy-node-client` is through [NPM](https://www.npmjs.com/).
 
