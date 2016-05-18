@@ -19,9 +19,7 @@ test("Proxy", (t: test.Test) => {
           })
           .catch(reject);
       });
-    })
-      .then(st.end)
-      .catch((err) => fail(st, err));
+    }).then(st.end).catch((err) => fail(st, err));
   });
 
   t.test("Should remove a proxy", (st: test.Test) => {
@@ -38,17 +36,13 @@ test("Proxy", (t: test.Test) => {
         st.equal(createBody.name, proxy.name, "Create-body and proxy have same name");
 
         return proxy.remove();
-      })
-      .then(st.end)
-      .catch((err) => fail(st, err));
+      }).then(st.end).catch((err) => fail(st, err));
   });
 
   t.test("Should refresh toxics", (st: test.Test) => {
     const { helper, fail } = setup();
 
     const proxyName = "refresh-test";
-    helper.withProxy(proxyName, (proxy) => proxy.refreshToxics())
-      .then(st.end)
-      .catch((err) => fail(st, err));
+    helper.withProxy(proxyName, (proxy) => proxy.refreshToxics()).then(st.end).catch((err) => fail(st, err));
   });
 });

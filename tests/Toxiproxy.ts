@@ -5,18 +5,13 @@ import { setup } from "./Helper";
 
 test("Toxiproxy", (t: test.Test) => {
   t.test("Should create a proxy", (st: test.Test) => {
-    const { helper } = setup();
+    const { helper, fail } = setup();
 
-    helper.withProxy("create-test")
-      .then(st.end)
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+    helper.withProxy("create-test").then(st.end).catch((err) => fail(st, err));
   });
 
   t.test("Should get all proxies", (st: test.Test) => {
-    const { toxiproxy, helper } = setup();
+    const { toxiproxy, fail, helper } = setup();
 
     const proxyName = "get-all-test";
     helper.withProxy(proxyName, (proxy) => {
@@ -28,16 +23,11 @@ test("Toxiproxy", (t: test.Test) => {
           })
           .catch(reject);
       });
-    })
-      .then(st.end)
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+    }).then(st.end).catch((err) => fail(st, err));
   });
 
   t.test("Should get a proxy", (st: test.Test) => {
-    const { toxiproxy, helper } = setup();
+    const { toxiproxy, fail, helper } = setup();
 
     const proxyName = "get-test";
     helper.withProxy(proxyName, (proxy) => {
@@ -49,11 +39,6 @@ test("Toxiproxy", (t: test.Test) => {
           })
           .catch(reject);
       });
-    })
-      .then(st.end)
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+    }).then(st.end).catch((err) => fail(st, err));
   });
 });
