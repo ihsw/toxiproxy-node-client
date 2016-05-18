@@ -44,28 +44,27 @@ Here is an example for creating a proxy that limits a Redis connection to 1000KB
 
 ```typescript
 // index.ts
-import { Toxiproxy, ICreateProxyBody, Toxic, ICreateToxicBody } from "toxiproxy-node-client";
+import { Toxiproxy, ICreateProxyBody, Toxic, ICreateToxicBody } from "./src/index";
 
 const toxiproxy = new Toxiproxy("http://localhost:8474");
 const createBody = <ICreateProxyBody>{
-  name: "ihsw_test_redis_master",
   listen: "localhost:0",
+  name: "ihsw_test_redis_master",
   upstream: "localhost:6379"
 };
 toxiproxy.createProxy(createBody)
   .then((proxy) => {
     const options = <ICreateToxicBody>{
-      name: "bandwidth",
-      type: "bandwidth",
       attributes: { "rate": 1000 },
+      name: "bandwidth",
       stream: "downstream",
-      toxicity: 1
+      toxicity: 1,
+      type: "bandwidth"
     };
-    proxy.addToxic(new Toxic(proxy, options))
-      .then(console.log)
-      .catch(console.error);
+    return proxy.addToxic(new Toxic(proxy, options));
   })
-  .catch(console.error);
+  .then((toxic) => console.log(toxic))
+  .catch((err) => console.error(err));
 ```
 
 ## Documentation
