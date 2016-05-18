@@ -55,8 +55,8 @@ export default class Toxic {
     return `${this.getHost()}/proxies/${this.proxy.name}/toxics/${this.name}`;
   }
 
-  remove(): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  remove(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       request
         .delete(this.getPath())
         .end((err, res) => {
@@ -68,7 +68,7 @@ export default class Toxic {
             return;
           }
 
-          resolve({});
+          resolve();
         });
     });
   }

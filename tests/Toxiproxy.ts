@@ -1,5 +1,6 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
+import Proxy from "../src/Proxy";
 import { setup } from "./Helper";
 
 test("Toxiproxy", (t: test.Test) => {
@@ -19,11 +20,11 @@ test("Toxiproxy", (t: test.Test) => {
 
     const proxyName = "get-all-test";
     helper.withProxy(proxyName, (proxy) => {
-      return new Promise<any>((resolve, reject) => {
+      return new Promise<Proxy>((resolve, reject) => {
         toxiproxy.getAll()
           .then((proxies) => {
-            st.equal(proxies[proxyName].name, proxyName, "Proxy body and fetched proxy have same name");
-            resolve();
+            st.equal(proxies[proxyName].name, proxy.name, "Proxy body and fetched proxy have same name");
+            resolve(proxy);
           })
           .catch(reject);
       });
@@ -40,13 +41,13 @@ test("Toxiproxy", (t: test.Test) => {
 
     const proxyName = "get-test";
     helper.withProxy(proxyName, (proxy) => {
-      return new Promise<any>((resolve, reject) => {
+      return new Promise<Proxy>((resolve, reject) => {
         toxiproxy.get(proxyName)
           .then((proxy) => {
             st.equal(proxy.name, proxyName, "Proxy body and fetched proxy have same name");
-            resolve();
+            resolve(proxy);
           })
-          .catch(resolve);
+          .catch(reject);
       });
     })
       .then(st.end)

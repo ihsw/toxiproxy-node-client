@@ -60,8 +60,8 @@ export default class Toxiproxy {
     });
   }
 
-  removeAll(proxies: Proxies): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  removeAll(proxies: Proxies): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       async.forEachOf(proxies, (proxy: Proxy, name: string, cb: Function) => {
         proxy.remove()
           .then(() => cb())

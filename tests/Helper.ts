@@ -14,11 +14,11 @@ export function setup() {
 }
 
 export interface IWithProxyCallback {
-  (proxy: Proxy): Promise<any>;
+  (proxy: Proxy): Promise<Proxy>;
 }
 
 export interface IWithToxicCallback {
-  (toxic?: Toxic): Promise<any>;
+  (toxic?: Toxic): Promise<Toxic>;
 }
 
 export default class Helper {
@@ -30,7 +30,7 @@ export default class Helper {
 
   withProxy(name: string, cb?: IWithProxyCallback): Promise<Proxy> {
     if (!cb) {
-      cb = (proxy) => Promise.resolve();
+      cb = (proxy) => Promise.resolve(proxy);
     }
 
     return new Promise<Proxy>((resolve, reject) => {
@@ -40,27 +40,23 @@ export default class Helper {
         upstream: "localhost:6379"
       };
       this.toxiproxy.createProxy(createBody)
-        .then((proxy) => {
-          cb(proxy)
-            .then(() => proxy.remove().then(resolve).catch(reject))
-            .catch(reject);
-        })
+        .then(cb)
+        .then((proxy) => proxy.remove())
+        .then(() => resolve())
         .catch(reject);
     });
   }
 
   withToxic(proxy: Proxy, type: ToxicType, cb?: IWithToxicCallback): Promise<Toxic> {
     if (!cb) {
-      cb = (toxic) => Promise.resolve();
+      cb = (toxic) => Promise.resolve(toxic);
     }
 
     return new Promise<Toxic>((resolve, reject) => {
       proxy.addToxic(new Toxic(proxy, <IToxicBody>{ type: type }))
-        .then((toxic) => {
-          cb(toxic)
-            .then(() => toxic.remove().then(resolve).catch(reject))
-            .catch(reject);
-        })
+        .then(cb)
+        .then((toxic) => toxic.remove())
+        .then(() => resolve())
         .catch(reject);
     });
   }

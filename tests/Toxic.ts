@@ -1,5 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
 import * as test from "tape";
+import Proxy from "../src/Proxy";
+import Toxic from "../src/Toxic";
 import { setup } from "./Helper";
 
 test("Toxic", (t: test.Test) => {
@@ -8,8 +10,10 @@ test("Toxic", (t: test.Test) => {
 
     const proxyName = "create-toxic-test";
     helper.withProxy(proxyName, (proxy) => {
-        return new Promise<any>((resolve, reject) => {
-          helper.withToxic(proxy, "latency").then(resolve).catch(reject);
+        return new Promise<Proxy>((resolve, reject) => {
+          helper.withToxic(proxy, "latency")
+            .then(() => resolve(proxy))
+            .catch(reject);
         });
       })
       .then(st.end)
@@ -19,19 +23,15 @@ test("Toxic", (t: test.Test) => {
       });
   });
 
-  t.test("Should get refresh", (st: test.Test) => {
+  t.test("Should refresh", (st: test.Test) => {
     const { helper } = setup();
 
     const proxyName = "toxic-refresh-test";
     helper.withProxy(proxyName, (proxy) => {
-        return new Promise<any>((pResolve, pReject) => {
-          helper.withToxic(proxy, "latency", (toxic) => {
-            return new Promise<any>((tResolve, tReject) => {
-              toxic.refresh().then(tResolve).catch(tReject);
-            });
-          })
-            .then(pResolve)
-            .catch(pReject);
+        return new Promise<Proxy>((resolve, reject) => {
+          helper.withToxic(proxy, "latency", (toxic) => toxic.refresh())
+            .then(() => resolve(proxy))
+            .catch(reject);
         });
       })
       .then(st.end)
