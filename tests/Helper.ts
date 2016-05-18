@@ -1,4 +1,5 @@
 /// <reference path="../typings/main.d.ts" />
+import * as test from "tape";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
@@ -6,10 +7,15 @@ import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
 export function setup() {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
   const helper = new Helper(toxiproxy);
+  const fail = (t: test.Test, err: any) => {
+    t.fail(err);
+    t.end();
+  }
 
   return {
     toxiproxy,
-    helper
+    helper,
+    fail
   };
 }
 

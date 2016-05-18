@@ -6,7 +6,7 @@ import { setup } from "./Helper";
 
 test("Proxy", (t: test.Test) => {
   t.test("Should update a proxy", (st: test.Test) => {
-    const { helper } = setup();
+    const { helper, fail } = setup();
 
     const proxyName = "update-test";
     helper.withProxy(proxyName, (proxy) => {
@@ -21,14 +21,11 @@ test("Proxy", (t: test.Test) => {
       });
     })
       .then(st.end)
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+      .catch((err) => fail(st, err));
   });
 
   t.test("Should remove a proxy", (st: test.Test) => {
-    const { toxiproxy } = setup();
+    const { toxiproxy, fail } = setup();
 
     const createBody = <ICreateProxyBody>{
       enabled: true,
@@ -43,21 +40,15 @@ test("Proxy", (t: test.Test) => {
         return proxy.remove();
       })
       .then(st.end)
-      .catch((err) => {
-        st.fail(err.message);
-        st.end();
-      });
+      .catch((err) => fail(st, err));
   });
 
   t.test("Should refresh toxics", (st: test.Test) => {
-    const { helper } = setup();
+    const { helper, fail } = setup();
 
     const proxyName = "refresh-test";
     helper.withProxy(proxyName, (proxy) => proxy.refreshToxics())
       .then(st.end)
-      .catch((err) => {
-        st.fail(err);
-        st.end();
-      });
+      .catch((err) => fail(st, err));
   });
 });
