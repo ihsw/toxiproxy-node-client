@@ -94,4 +94,40 @@ export default class Toxiproxy {
         });
     });
   }
+
+  reset(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      request
+        .post(`${this.host}/reset`)
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.NO_CONTENT) {
+            reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
+            return;
+          }
+
+          resolve();
+        });
+    });
+  }
+
+  getVersion(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      request
+        .get(`${this.host}/version`)
+        .end((err, res) => {
+          if (err) {
+            reject(err);
+            return;
+          } else if (res.status !== HttpStatus.OK) {
+            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+            return;
+          }
+
+          resolve(res.text);
+        });
+    });
+  }
 }

@@ -41,4 +41,16 @@ test("Toxiproxy", (t: test.Test) => {
       });
     }).then(st.end).catch((err) => fail(st, err));
   });
+
+  t.test("Should reset", (st: test.Test) => {
+    const { toxiproxy, fail } = setup();
+
+    toxiproxy.reset().then(st.end).catch((err) => fail(st, err));
+  });
+
+  t.test("Should get version", (st: test.Test) => {
+    const { toxiproxy, fail } = setup();
+
+    toxiproxy.getVersion().then(() => st.end()).catch((err) => fail(st, err));
+  });
 });
