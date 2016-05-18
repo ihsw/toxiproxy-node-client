@@ -32,10 +32,9 @@ toxiproxy.createProxy(createBody)
       stream: "downstream",
       toxicity: 1
     };
-    proxy.addToxic(new toxiproxyClient.Toxic(proxy, options))
-      .then((toxic) => console.log(toxic))
-      .catch((err) => console.error(err));
+    return proxy.addToxic(new toxiproxyClient.Toxic(proxy, options));
   })
+  .then((toxic) => console.log(toxic))
   .catch((err) => console.error(err));
 ```
 
