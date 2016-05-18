@@ -28,12 +28,12 @@ export default class Helper {
     this.toxiproxy = toxiproxy;
   }
 
-  withProxy(name: string, cb?: IWithProxyCallback): Promise<Proxy> {
+  withProxy(name: string, cb?: IWithProxyCallback): Promise<void> {
     if (!cb) {
       cb = (proxy) => Promise.resolve(proxy);
     }
 
-    return new Promise<Proxy>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const createBody = <ICreateProxyBody>{
         listen: `localhost:0`,
         name: name,
@@ -47,12 +47,12 @@ export default class Helper {
     });
   }
 
-  withToxic(proxy: Proxy, type: ToxicType, cb?: IWithToxicCallback): Promise<Toxic> {
+  withToxic(proxy: Proxy, type: ToxicType, cb?: IWithToxicCallback): Promise<void> {
     if (!cb) {
       cb = (toxic) => Promise.resolve(toxic);
     }
 
-    return new Promise<Toxic>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       proxy.addToxic(new Toxic(proxy, <IToxicBody>{ type: type }))
         .then(cb)
         .then((toxic) => toxic.remove())
