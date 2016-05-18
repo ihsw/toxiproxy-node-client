@@ -10,7 +10,7 @@ export function setup() {
   const fail = (t: test.Test, err: any) => {
     t.fail(err);
     t.end();
-  }
+  };
 
   return {
     toxiproxy,
