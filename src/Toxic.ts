@@ -1,7 +1,5 @@
-/// <reference path="../typings/main.d.ts" />
-import * as request from "superagent";
-import * as HttpStatus from "http-status";
-import { Promise } from "es6-promise";
+// import * as request from "request-promise";
+// import * as HttpStatus from "http-status";
 import Proxy from "./Proxy";
 
 export type Direction = "upstream" | "downstream";
@@ -55,40 +53,40 @@ export default class Toxic {
     return `${this.getHost()}/proxies/${this.proxy.name}/toxics/${this.name}`;
   }
 
-  remove(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      request
-        .delete(this.getPath())
-        .end((err, res) => {
-          if (err) {
-            reject(err);
-            return;
-          } else if (res.status !== HttpStatus.NO_CONTENT) {
-            reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
-            return;
-          }
+  // remove(): Promise<void> {
+  //   return new Promise<void>((resolve, reject) => {
+  //     request
+  //       .delete(this.getPath())
+  //       .end((err, res) => {
+  //         if (err) {
+  //           reject(err);
+  //           return;
+  //         } else if (res.status !== HttpStatus.NO_CONTENT) {
+  //           reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
+  //           return;
+  //         }
 
-          resolve();
-        });
-    });
-  }
+  //         resolve();
+  //       });
+  //   });
+  // }
 
-  refresh(): Promise<Toxic> {
-    return new Promise<Toxic>((resolve, reject) => {
-      request
-        .get(this.getPath())
-        .end((err, res) => {
-          if (err) {
-            reject(err);
-            return;
-          } else if (res.status !== HttpStatus.OK) {
-            reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-            return;
-          }
+  // refresh(): Promise<Toxic> {
+  //   return new Promise<Toxic>((resolve, reject) => {
+  //     request
+  //       .get(this.getPath())
+  //       .end((err, res) => {
+  //         if (err) {
+  //           reject(err);
+  //           return;
+  //         } else if (res.status !== HttpStatus.OK) {
+  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
+  //           return;
+  //         }
 
-          this.parseBody(res.body);
-          resolve(this);
-        });
-    });
-  }
+  //         this.parseBody(res.body);
+  //         resolve(this);
+  //       });
+  //   });
+  // }
 }

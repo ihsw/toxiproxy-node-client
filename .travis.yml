@@ -2,15 +2,14 @@ sudo: required
 language: node_js
 
 before_install:
-- wget -O toxiproxy_2.0.0_amd64.deb https://github.com/Shopify/toxiproxy/releases/download/v2.0.0/toxiproxy_2.0.0_amd64.deb
+- wget -O toxiproxy_2.1.0_amd64.deb https://github.com/Shopify/toxiproxy/releases/download/v2.1.0/toxiproxy_2.1.0_amd64.deb
 - sudo dpkg -i ./toxiproxy_*_amd64.deb
 - rm toxiproxy_*_amd64.deb
 - sudo service toxiproxy start
 before_script:
-- typings install
-- npm run lint
+- npm run -s lint
 
-before_deploy: npm run build
+before_deploy: npm run -s build
 deploy:
   provider: npm
   email: iamhiddensomewhere@gmail.com

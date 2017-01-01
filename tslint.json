@@ -14,9 +14,6 @@
         "no-internal-module": true,
         "no-trailing-whitespace": true,
         "no-var-keyword": true,
-        "no-unused-variable": [
-            true
-        ],
         "object-literal-sort-keys": true,
         "one-line": [
             true,

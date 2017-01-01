@@ -5,11 +5,9 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "test": "ts-node ./node_modules/tape/bin/tape tests/**/*.ts | tap-spec",
-    "ts-node": "ts-node",
-    "typings": "typings",
+    "test": "ava --verbose ./dist/tests/*.js ./dist/tests/**/*.js",
     "lint": "tslint ./tests/**/*.ts ./src/**/*.ts",
-    "build": "tsc"
+    "build": "tsc --noUnusedParameters --noUnusedLocals && echo built"
   },
   "repository": {
     "type": "git",
@@ -22,18 +20,20 @@
   },
   "homepage": "https://github.com/ihsw/toxiproxy-node-client#readme",
   "devDependencies": {
-    "tap-spec": "^4.1.1",
-    "tape": "^4.5.1",
-    "ts-node": "^0.7.2",
-    "tslint": "^3.7.4",
-    "typescript": "^1.8.10",
-    "typings": "^0.7.12"
+    "@types/async": "^2.0.37",
+    "@types/http-status": "^0.2.29",
+    "@types/lodash": "^4.14.45",
+    "@types/request-promise-native": "^1.0.2",
+    "ava": "^0.17.0",
+    "tslint": "^4.2.0",
+    "typescript": "^2.1.4"
   },
   "dependencies": {
     "async": "^1.5.2",
     "es6-promise": "^3.1.2",
-    "http-status": "^0.2.2",
+    "http-status": "^0.2.3",
     "lodash": "^4.11.1",
-    "superagent": "^1.8.3"
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3"
   }
 }

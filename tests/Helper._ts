@@ -1,5 +1,4 @@
-/// <reference path="../typings/main.d.ts" />
-import * as test from "tape";
+import { test } from "ava";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 import Proxy from "../src/Proxy";
 import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
