@@ -1,5 +1,7 @@
 sudo: required
 language: node_js
+- 6
+- 7
 
 before_install:
 - wget -O toxiproxy_2.1.0_amd64.deb https://github.com/Shopify/toxiproxy/releases/download/v2.1.0/toxiproxy_2.1.0_amd64.deb
