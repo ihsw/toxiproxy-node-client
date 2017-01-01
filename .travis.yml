@@ -11,6 +11,7 @@ before_install:
 - sudo service toxiproxy start
 before_script:
 - npm run -s lint
+- npm run -s build
 
 before_deploy: npm run -s build
 deploy:
