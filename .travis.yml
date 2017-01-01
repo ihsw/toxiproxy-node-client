@@ -13,7 +13,6 @@ before_script:
 - npm run -s lint
 - npm run -s build
 
-before_deploy: npm run -s build
 deploy:
   provider: npm
   email: iamhiddensomewhere@gmail.com
