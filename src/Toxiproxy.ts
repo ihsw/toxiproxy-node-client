@@ -39,6 +39,10 @@ export default class Toxiproxy {
         url: `${this.host}/proxies`
       }));
     } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
       if (err.statusCode === HttpStatus.CONFLICT) {
         throw new Error(`Proxy ${body.name} already exists`);
       }
@@ -54,6 +58,10 @@ export default class Toxiproxy {
         url: `${this.host}/proxies/${name}`
       }));
     } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
       throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
     }
   }

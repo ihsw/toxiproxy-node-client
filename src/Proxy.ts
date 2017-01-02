@@ -1,5 +1,5 @@
 import * as rp from "request-promise-native";
-// import * as HttpStatus from "http-status";
+import * as HttpStatus from "http-status";
 import Toxiproxy, { ICreateProxyResponse, IGetProxyResponse } from "./Toxiproxy";
 import Toxic, { Type, Direction, IAttributes } from "./Toxic";
 
@@ -42,9 +42,12 @@ export default class Proxy {
   async remove(): Promise<void> {
     try {
       await rp.delete({ url: this.getPath() });
-      return Promise.resolve();
     } catch (err) {
-      return Promise.reject(err);
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${err.statusCode}`);
     }
   }
 
