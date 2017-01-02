@@ -6,7 +6,7 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "test": "ava --verbose ./dist/tests/*.js ./dist/tests/**/*.js",
-    "lint": "tslint ./tests/**/*.ts ./src/**/*.ts",
+    "lint": "tslint ./tests/**/*.ts ./src/**/*.ts && echo linted",
     "build": "tsc --noUnusedParameters --noUnusedLocals && echo built"
   },
   "repository": {
