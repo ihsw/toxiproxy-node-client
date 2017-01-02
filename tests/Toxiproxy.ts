@@ -41,6 +41,12 @@ test("Toxiproxy Should get version", async () => {
   return toxiproxy.getVersion();
 });
 
+test("Toxiproxy Should reset", async () => {
+  const toxiproxy = new Toxiproxy("http://localhost:8474");
+
+  return toxiproxy.reset();
+});
+
 //   t.test("Should get all proxies", (st: test.Test) => {
 //     const { toxiproxy, fail, helper } = setup();
 
@@ -61,11 +67,5 @@ test("Toxiproxy Should get version", async () => {
 //     const { toxiproxy, fail } = setup();
 
 //     toxiproxy.reset().then(st.end).catch((err) => fail(st, err));
-//   });
-
-//   t.test("Should get version", (st: test.Test) => {
-//     const { toxiproxy, fail } = setup();
-
-//     toxiproxy.getVersion().then(() => st.end()).catch((err) => fail(st, err));
 //   });
 // });

@@ -81,6 +81,21 @@ export default class Toxiproxy {
     }
   }
 
+  async reset(): Promise<void> {
+    try {
+      return await rp.post({
+        json: true,
+        url: `${this.host}/reset`
+      });
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${err.statusCode}`);
+    }
+  }
+
   // getAll(): Promise<Proxies> {
   //   return new Promise<Proxies>((resolve, reject) => {
   //     request
@@ -113,42 +128,6 @@ export default class Toxiproxy {
 
   //       resolve();
   //     });
-  //   });
-  // }
-
-  // reset(): Promise<void> {
-  //   return new Promise<void>((resolve, reject) => {
-  //     request
-  //       .post(`${this.host}/reset`)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.NO_CONTENT) {
-  //           reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
-  //           return;
-  //         }
-
-  //         resolve();
-  //       });
-  //   });
-  // }
-
-  // getVersion(): Promise<string> {
-  //   return new Promise<string>((resolve, reject) => {
-  //     request
-  //       .get(`${this.host}/version`)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
-
-  //         resolve(res.text);
-  //       });
   //   });
   // }
 }
