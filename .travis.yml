@@ -12,6 +12,7 @@ before_install:
 before_script:
 - npm run -s lint
 - npm run -s build
+script: npm run -s test
 
 deploy:
   provider: npm
