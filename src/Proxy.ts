@@ -1,6 +1,6 @@
-// import * as request from "request-promise";
+import * as rp from "request-promise-native";
 // import * as HttpStatus from "http-status";
-import Toxiproxy from "./Toxiproxy";
+import Toxiproxy, { ICreateProxyResponse } from "./Toxiproxy";
 import Toxic, { Type, Direction, IAttributes } from "./Toxic";
 
 export interface ICreateToxicBody {
@@ -20,10 +20,8 @@ export default class Proxy {
   enabled: boolean;
   toxics: Toxic[];
 
-  constructor(toxiproxy: Toxiproxy, body: any) {
+  constructor(toxiproxy: Toxiproxy, body: ICreateProxyResponse) {
     this.toxiproxy = toxiproxy;
-
-    console.log(body);
 
     const { name, listen, upstream, enabled, toxics } = body;
     this.name = name;
@@ -41,23 +39,13 @@ export default class Proxy {
     return `${this.getHost()}/proxies/${this.name}`;
   }
 
-  // remove(): Promise<void> {
-  //   return new Promise<void>((resolve, reject) => {
-  //     request
-  //       .delete(this.getPath())
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(new Error(err.response.error.text));
-  //           return;
-  //         } else if (res.status !== HttpStatus.NO_CONTENT) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
-
-  //         resolve();
-  //       });
-  //   });
-  // }
+  async remove(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      rp.delete({ url: this.getPath() })
+        .then(() => resolve())
+        .catch(reject);
+    });
+  }
 
   // update(): Promise<Proxy> {
   //   return new Promise<Proxy>((resolve, reject) => {

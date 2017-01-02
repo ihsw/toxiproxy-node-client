@@ -11,6 +11,14 @@ export interface ICreateProxyBody {
   enabled?: boolean;
 }
 
+export interface ICreateProxyResponse {
+  name: string;
+  listen: string;
+  upstream: string;
+  enabled: boolean;
+  toxics: any[];
+}
+
 export interface Proxies {
   [name: string]: Proxy;
 }
@@ -23,11 +31,12 @@ export default class Toxiproxy {
 
   async createProxy(body: ICreateProxyBody): Promise<Proxy> {
     try {
-      return await rp.post({
-        body: JSON.stringify(body),
+      return new Proxy(this, <ICreateProxyResponse>await rp.post({
+        body: body,
+        json: true,
         method: "POST",
         url: `${this.host}/proxies`
-      });
+      }));
     } catch (err) {
       if (err.statusCode === HttpStatus.CONFLICT) {
         throw new Error(`Proxy ${body.name} already exists`);

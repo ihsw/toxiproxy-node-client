@@ -1,14 +1,17 @@
 import { test } from "ava";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
 
-test("Toxiproxy Should create a proxy", async () => {
+test("Toxiproxy Should create a proxy", async (t) => {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
   const createBody = <ICreateProxyBody>{
     listen: "localhost:0",
     name: "create-test",
     upstream: "localhost:6379"
   };
-  return toxiproxy.createProxy(createBody);
+  const proxy = await toxiproxy.createProxy(createBody);
+  t.is(createBody.name, proxy.name);
+
+  return proxy.remove();
 });
 
 //   t.test("Should create a proxy", (st: test.Test) => {
