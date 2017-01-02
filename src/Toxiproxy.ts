@@ -66,6 +66,21 @@ export default class Toxiproxy {
     }
   }
 
+  async getVersion(): Promise<string> {
+    try {
+      return await rp.get({
+        json: true,
+        url: `${this.host}/version`
+      });
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
+
   // getAll(): Promise<Proxies> {
   //   return new Promise<Proxies>((resolve, reject) => {
   //     request
@@ -98,24 +113,6 @@ export default class Toxiproxy {
 
   //       resolve();
   //     });
-  //   });
-  // }
-
-  // get(name: string): Promise<Proxy> {
-  //   return new Promise<Proxy>((resolve, reject) => {
-  //     request
-  //       .get(`${this.host}/proxies/${name}`)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
-
-  //         resolve(new Proxy(this, res.body));
-  //       });
   //   });
   // }
 

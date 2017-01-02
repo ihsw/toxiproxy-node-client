@@ -35,6 +35,12 @@ test("Toxiproxy Should get a proxy", async (t) => {
   return createdProxy.remove();
 });
 
+test("Toxiproxy Should get version", async () => {
+  const toxiproxy = new Toxiproxy("http://localhost:8474");
+
+  return toxiproxy.getVersion();
+});
+
 //   t.test("Should get all proxies", (st: test.Test) => {
 //     const { toxiproxy, fail, helper } = setup();
 
@@ -44,22 +50,6 @@ test("Toxiproxy Should get a proxy", async (t) => {
 //         toxiproxy.getAll()
 //           .then((proxies) => {
 //             st.equal(proxies[proxyName].name, proxy.name, "Proxy body and fetched proxy have same name");
-//             resolve(proxy);
-//           })
-//           .catch(reject);
-//       });
-//     }).then(st.end).catch((err) => fail(st, err));
-//   });
-
-//   t.test("Should get a proxy", (st: test.Test) => {
-//     const { toxiproxy, fail, helper } = setup();
-
-//     const proxyName = "get-test";
-//     helper.withProxy(proxyName, (proxy) => {
-//       return new Promise<Proxy>((resolve, reject) => {
-//         toxiproxy.get(proxyName)
-//           .then((proxy) => {
-//             st.equal(proxy.name, proxyName, "Proxy body and fetched proxy have same name");
 //             resolve(proxy);
 //           })
 //           .catch(reject);
