@@ -39,7 +39,7 @@ export default class Proxy {
     return `${this.getHost()}/proxies/${this.name}`;
   }
 
-  async remove(): Promise<void> {
+  remove(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       rp.delete({ url: this.getPath() })
         .then(() => resolve())
