@@ -1,24 +1,39 @@
-import { test } from "ava";
+import { test, ContextualTestContext } from "ava";
 import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
+import Proxy from "../src/Proxy";
 
-test("Toxiproxy Should create a proxy", async (t) => {
+interface ICreateProxyHelper {
+  proxy: Proxy;
+  toxiproxy: Toxiproxy;
+}
+
+const createProxy = async (t: ContextualTestContext, name: string): Promise<ICreateProxyHelper> => {
   const toxiproxy = new Toxiproxy("http://localhost:8474");
   const createBody = <ICreateProxyBody>{
     listen: "localhost:0",
-    name: "create-test",
+    name: name,
     upstream: "localhost:6379"
   };
   const proxy = await toxiproxy.createProxy(createBody);
   t.is(createBody.name, proxy.name);
 
+  return { proxy, toxiproxy };
+};
+
+test("Toxiproxy Should create a proxy", async (t) => {
+  const { proxy } = await createProxy(t, "create-test");
+
   return proxy.remove();
 });
 
-//   t.test("Should create a proxy", (st: test.Test) => {
-//     const { helper, fail } = setup();
+test("Toxiproxy Should get a proxy", async (t) => {
+  const { proxy: createdProxy, toxiproxy } = await createProxy(t, "get-test");
 
-//     helper.withProxy("create-test").then(st.end).catch((err) => fail(st, err));
-//   });
+  const fetchedProxy = await toxiproxy.get(createdProxy.name);
+  t.is(createdProxy.name, fetchedProxy.name);
+
+  return createdProxy.remove();
+});
 
 //   t.test("Should get all proxies", (st: test.Test) => {
 //     const { toxiproxy, fail, helper } = setup();

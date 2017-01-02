@@ -1,6 +1,6 @@
 import * as rp from "request-promise-native";
 // import * as HttpStatus from "http-status";
-import Toxiproxy, { ICreateProxyResponse } from "./Toxiproxy";
+import Toxiproxy, { ICreateProxyResponse, IGetProxyResponse } from "./Toxiproxy";
 import Toxic, { Type, Direction, IAttributes } from "./Toxic";
 
 export interface ICreateToxicBody {
@@ -20,7 +20,7 @@ export default class Proxy {
   enabled: boolean;
   toxics: Toxic[];
 
-  constructor(toxiproxy: Toxiproxy, body: ICreateProxyResponse) {
+  constructor(toxiproxy: Toxiproxy, body: ICreateProxyResponse | IGetProxyResponse) {
     this.toxiproxy = toxiproxy;
 
     const { name, listen, upstream, enabled, toxics } = body;

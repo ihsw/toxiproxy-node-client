@@ -19,6 +19,8 @@ export interface ICreateProxyResponse {
   toxics: any[];
 }
 
+export interface IGetProxyResponse extends ICreateProxyResponse { }
+
 export interface Proxies {
   [name: string]: Proxy;
 }
@@ -34,7 +36,6 @@ export default class Toxiproxy {
       return new Proxy(this, <ICreateProxyResponse>await rp.post({
         body: body,
         json: true,
-        method: "POST",
         url: `${this.host}/proxies`
       }));
     } catch (err) {
@@ -42,6 +43,17 @@ export default class Toxiproxy {
         throw new Error(`Proxy ${body.name} already exists`);
       }
 
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
+
+  async get(name: string): Promise<Proxy> {
+    try {
+      return new Proxy(this, <IGetProxyResponse>await rp.get({
+        json: true,
+        url: `${this.host}/proxies/${name}`
+      }));
+    } catch (err) {
       throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
     }
   }
