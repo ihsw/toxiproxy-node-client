@@ -7,8 +7,10 @@ interface ICreateProxyHelper {
   toxiproxy: Toxiproxy;
 }
 
+const toxiproxyUrl = "http://localhost:8474";
+
 const createProxy = async (t: ContextualTestContext, name: string): Promise<ICreateProxyHelper> => {
-  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const toxiproxy = new Toxiproxy(toxiproxyUrl);
   const createBody = <ICreateProxyBody>{
     listen: "localhost:0",
     name: name,
@@ -36,13 +38,13 @@ test("Toxiproxy Should get a proxy", async (t) => {
 });
 
 test("Toxiproxy Should get version", async () => {
-  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
   return toxiproxy.getVersion();
 });
 
 test("Toxiproxy Should reset", async () => {
-  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
   return toxiproxy.reset();
 });
