@@ -19,6 +19,10 @@ export interface ICreateProxyResponse {
   toxics: any[];
 }
 
+export interface IPopulateProxiesResponse {
+  proxies: ICreateProxyResponse[];
+}
+
 export interface IGetProxyResponse extends ICreateProxyResponse { }
 
 export interface IGetProxiesResponse {
@@ -49,6 +53,29 @@ export default class Toxiproxy {
 
       if (err.statusCode === HttpStatus.CONFLICT) {
         throw new Error(`Proxy ${body.name} already exists`);
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
+
+  async populate(body: ICreateProxyBody[]): Promise<Proxies> {
+    try {
+      const res = <IPopulateProxiesResponse>await rp.post({
+        body: body,
+        json: true,
+        url: `${this.host}/populate`
+      });
+
+      const proxies: Proxies = {};
+      for (const proxyResponse of res.proxies) {
+        proxies[proxyResponse.name] = new Proxy(this, proxyResponse);
+      }
+
+      return proxies;
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
       }
 
       throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
