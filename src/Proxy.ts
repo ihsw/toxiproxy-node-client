@@ -1,15 +1,13 @@
 import * as rp from "request-promise-native";
 import * as HttpStatus from "http-status";
-import Toxiproxy, { ICreateProxyResponse, IGetProxyResponse } from "./Toxiproxy";
-import Toxic, { Type, Direction, IAttributes } from "./Toxic";
-
-export interface ICreateToxicBody {
-  name: string;
-  type: Type;
-  stream: Direction;
-  toxicity: number;
-  attributes: IAttributes;
-}
+import Toxiproxy from "./Toxiproxy";
+import Toxic from "./Toxic";
+import {
+  ICreateProxyResponse,
+  IGetProxyResponse,
+  IUpdateProxyBody,
+  IUpdateProxyResponse
+} from "./interfaces";
 
 export default class Proxy {
   toxiproxy: Toxiproxy;
@@ -51,29 +49,28 @@ export default class Proxy {
     }
   }
 
-  // update(): Promise<Proxy> {
-  //   return new Promise<Proxy>((resolve, reject) => {
-  //     const payload = {
-  //       enabled: this.enabled,
-  //       listen: this.listen,
-  //       upstream: this.upstream
-  //     };
-  //     request
-  //       .post(this.getPath())
-  //       .send(payload)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
+  async update(): Promise<Proxy> {
+    try {
+      const body = <IUpdateProxyBody>{
+        enabled: this.enabled,
+        listen: this.listen,
+        upstream: this.upstream
+      };
 
-  //         resolve(new Proxy(this.toxiproxy, res.body));
-  //       });
-  //   });
-  // }
+      const res = <IUpdateProxyResponse>await rp.post({
+        body: body,
+        json: true,
+        url: `${this.getPath()}`
+      });
+      return new Proxy(this.toxiproxy, res);
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
 
   // refreshToxics(): Promise<Proxy> {
   //   return new Promise<Proxy>((resolve, reject) => {

@@ -1,5 +1,6 @@
-export { default as Proxy, ICreateToxicBody } from "./Proxy";
-export { default as Toxiproxy, ICreateProxyBody } from "./Toxiproxy";
+export { default as Proxy } from "./Proxy";
+export { ICreateProxyBody, ICreateToxicBody } from "./interfaces";
+export { default as Toxiproxy } from "./Toxiproxy";
 export {
   default as Toxic,
   Direction as ToxicDirection,

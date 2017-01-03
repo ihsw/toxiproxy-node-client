@@ -1,26 +1,7 @@
-import { test, ContextualTestContext } from "ava";
-import Toxiproxy, { ICreateProxyBody } from "../src/Toxiproxy";
-import Proxy from "../src/Proxy";
-
-interface ICreateProxyHelper {
-  proxy: Proxy;
-  toxiproxy: Toxiproxy;
-}
-
-const toxiproxyUrl = "http://localhost:8474";
-
-const createProxy = async (t: ContextualTestContext, name: string): Promise<ICreateProxyHelper> => {
-  const toxiproxy = new Toxiproxy(toxiproxyUrl);
-  const createBody = <ICreateProxyBody>{
-    listen: "localhost:0",
-    name: name,
-    upstream: "localhost:6379"
-  };
-  const proxy = await toxiproxy.createProxy(createBody);
-  t.is(createBody.name, proxy.name);
-
-  return { proxy, toxiproxy };
-};
+import { test } from "ava";
+import { createProxy, toxiproxyUrl } from "../src/TestHelper";
+import Toxiproxy from "../src/Toxiproxy";
+import { ICreateProxyBody } from "../src/interfaces";
 
 test("Toxiproxy Should create a proxy", async (t) => {
   const { proxy } = await createProxy(t, "create-test");

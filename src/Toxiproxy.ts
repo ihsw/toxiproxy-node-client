@@ -1,33 +1,13 @@
 import * as rp from "request-promise-native";
 import * as HttpStatus from "http-status";
-// import * as async from "async";
-// import * as _ from "lodash";
 import Proxy from "./Proxy";
-
-export interface ICreateProxyBody {
-  name: string;
-  listen: string;
-  upstream: string;
-  enabled?: boolean;
-}
-
-export interface ICreateProxyResponse {
-  name: string;
-  listen: string;
-  upstream: string;
-  enabled: boolean;
-  toxics: any[];
-}
-
-export interface IPopulateProxiesResponse {
-  proxies: ICreateProxyResponse[];
-}
-
-export interface IGetProxyResponse extends ICreateProxyResponse { }
-
-export interface IGetProxiesResponse {
-  [name: string]: IGetProxyResponse;
-}
+import {
+  ICreateProxyBody,
+  ICreateProxyResponse,
+  IGetProxyResponse,
+  IPopulateProxiesResponse,
+  IGetProxiesResponse
+} from "./interfaces";
 
 export interface Proxies {
   [name: string]: Proxy;
@@ -148,21 +128,4 @@ export default class Toxiproxy {
       throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
     }
   }
-
-  // removeAll(proxies: Proxies): Promise<void> {
-  //   return new Promise<void>((resolve, reject) => {
-  //     async.forEachOf(proxies, (proxy: Proxy, _, cb: Function) => {
-  //       proxy.remove()
-  //         .then(() => cb())
-  //         .catch((err) => cb(err));
-  //     }, (err) => {
-  //       if (err) {
-  //         reject(err);
-  //         return;
-  //       }
-
-  //       resolve();
-  //     });
-  //   });
-  // }
 }
