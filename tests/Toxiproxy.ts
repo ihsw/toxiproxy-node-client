@@ -49,7 +49,7 @@ test("Toxiproxy Should reset", async () => {
   return toxiproxy.reset();
 });
 
-test("Toxiproxy Should populate", async (t) => {
+test("Toxiproxy Should populate", async () => {
   const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
   // populating with proxies
