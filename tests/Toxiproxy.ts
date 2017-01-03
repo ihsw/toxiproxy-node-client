@@ -52,6 +52,7 @@ test("Toxiproxy Should reset", async () => {
 test("Toxiproxy Should get all proxies", async (t) => {
   const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
+  // populating with proxies
   interface ICreateProxiesDict {
     [key: string]: ICreateProxyBody;
   }
@@ -62,16 +63,17 @@ test("Toxiproxy Should get all proxies", async (t) => {
       upstream: "localhost:6379"
     }
   };
-
   await Promise.all(Object.keys(createBodies).map(
     (name) => toxiproxy.createProxy(createBodies[name])
   ));
 
+  // fetching them all
   const proxies = await toxiproxy.getAll();
   for (const proxyName in proxies) {
     t.is(createBodies[proxyName].name, proxies[proxyName].name);
   }
 
+  // clearing them all out
   return Promise.all(Object.keys(proxies).map(
     (name) => proxies[name].remove()
   ));
