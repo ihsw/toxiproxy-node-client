@@ -73,7 +73,5 @@ test("Toxiproxy Should get all proxies", async (t) => {
   }
 
   // clearing them all out
-  return Promise.all(Object.keys(proxies).map(
-    (name) => proxies[name].remove()
-  ));
+  return Promise.all(Object.keys(proxies).map((name) => proxies[name].remove()));
 });
