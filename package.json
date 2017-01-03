@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "test": "ava -v -s ./dist/tests/*.js ./dist/tests/**/*.js",
+    "test": "ava -v ./dist/tests/*.js ./dist/tests/**/*.js",
     "lint": "tslint ./tests/**/*.ts ./src/**/*.ts && echo linted",
     "build": "tsc --noUnusedParameters --noUnusedLocals && echo built"
   },
