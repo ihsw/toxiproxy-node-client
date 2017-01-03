@@ -49,25 +49,30 @@ test("Toxiproxy Should reset", async () => {
   return toxiproxy.reset();
 });
 
-//   t.test("Should get all proxies", (st: test.Test) => {
-//     const { toxiproxy, fail, helper } = setup();
+test("Toxiproxy Should get all proxies", async (t) => {
+  const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
-//     const proxyName = "get-all-test";
-//     helper.withProxy(proxyName, (proxy) => {
-//       return new Promise<Proxy>((resolve, reject) => {
-//         toxiproxy.getAll()
-//           .then((proxies) => {
-//             st.equal(proxies[proxyName].name, proxy.name, "Proxy body and fetched proxy have same name");
-//             resolve(proxy);
-//           })
-//           .catch(reject);
-//       });
-//     }).then(st.end).catch((err) => fail(st, err));
-//   });
+  interface ICreateProxiesDict {
+    [key: string]: ICreateProxyBody;
+  }
+  const createBodies = <ICreateProxiesDict>{
+    "get-all-test": {
+      listen: "localhost:0",
+      name: "get-all-test",
+      upstream: "localhost:6379"
+    }
+  };
 
-//   t.test("Should reset", (st: test.Test) => {
-//     const { toxiproxy, fail } = setup();
+  await Promise.all(Object.keys(createBodies).map(
+    (name) => toxiproxy.createProxy(createBodies[name])
+  ));
 
-//     toxiproxy.reset().then(st.end).catch((err) => fail(st, err));
-//   });
-// });
+  const proxies = await toxiproxy.getAll();
+  for (const proxyName in proxies) {
+    t.is(createBodies[proxyName].name, proxies[proxyName].name);
+  }
+
+  return Promise.all(Object.keys(proxies).map(
+    (name) => proxies[name].remove()
+  ));
+});

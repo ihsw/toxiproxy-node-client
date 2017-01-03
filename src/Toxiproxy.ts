@@ -21,6 +21,10 @@ export interface ICreateProxyResponse {
 
 export interface IGetProxyResponse extends ICreateProxyResponse { }
 
+export interface IGetProxiesResponse {
+  [name: string]: IGetProxyResponse;
+}
+
 export interface Proxies {
   [name: string]: Proxy;
 }
@@ -96,23 +100,27 @@ export default class Toxiproxy {
     }
   }
 
-  // getAll(): Promise<Proxies> {
-  //   return new Promise<Proxies>((resolve, reject) => {
-  //     request
-  //       .get(`${this.host}/proxies`)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(new Error(err.response.error.text));
-  //           return;
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
+  async getAll(): Promise<Proxies> {
+    try {
+      const responses = <IGetProxiesResponse>await rp.get({
+        json: true,
+        url: `${this.host}/proxies`
+      });
 
-  //         resolve(<Proxies>_.mapValues(res.body, (body) => new Proxy(this, body)));
-  //     });
-  //   });
-  // }
+      const proxies: Proxies = {};
+      for (const name in responses) {
+        proxies[name] = new Proxy(this, responses[name]);
+      }
+
+      return proxies;
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
 
   // removeAll(proxies: Proxies): Promise<void> {
   //   return new Promise<void>((resolve, reject) => {
