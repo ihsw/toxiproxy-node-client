@@ -5,5 +5,5 @@ export {
   default as Toxic,
   Direction as ToxicDirection,
   Type as ToxicType,
-  IAttributes as IToxicAttributes
+  AttributeTypes as ToxicAttributeTypes
 } from "./Toxic";

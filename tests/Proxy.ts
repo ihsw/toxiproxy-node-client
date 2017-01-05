@@ -1,5 +1,10 @@
 import { test } from "ava";
-import { createProxy } from "../src/TestHelper";
+import { createProxy, createToxic } from "../src/TestHelper";
+import Toxic, {
+  Timeout
+  // Latency, Down, Bandwidth,
+  // Slowclose, Timeout, Slicer
+} from "../src/Toxic";
 
 test("Proxy Should update a proxy", async (t) => {
   const { proxy } = await createProxy(t, "update-proxy-test");
@@ -13,6 +18,16 @@ test("Proxy Should update a proxy", async (t) => {
 
 test("Proxy Should remove a proxy", async (t) => {
   const { proxy } = await createProxy(t, "remove-test");
+
+  return proxy.remove();
+});
+
+test("Proxy Should add a timeout toxic", async (t) => {
+  const { proxy } = await createProxy(t, "add-timeout-toxic-test");
+
+  const attributes = <Timeout>{ timeout: 5 * 1000 };
+  const toxic = <Toxic<Timeout>>await createToxic(t, proxy, "timeout", attributes);
+  t.is(attributes.timeout, toxic.attributes.timeout);
 
   return proxy.remove();
 });

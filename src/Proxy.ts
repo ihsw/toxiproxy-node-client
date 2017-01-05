@@ -1,12 +1,12 @@
 import * as rp from "request-promise-native";
 import * as HttpStatus from "http-status";
 import Toxiproxy from "./Toxiproxy";
-import Toxic from "./Toxic";
+import Toxic, { AttributeTypes as ToxicAttributeTypes } from "./Toxic";
 import {
   ICreateProxyResponse,
   IGetProxyResponse,
-  IUpdateProxyBody,
-  IUpdateProxyResponse
+  IUpdateProxyBody, IUpdateProxyResponse,
+  ICreateToxicBody, ICreateToxicResponse
 } from "./interfaces";
 
 export default class Proxy {
@@ -16,7 +16,7 @@ export default class Proxy {
   listen: string;
   upstream: string;
   enabled: boolean;
-  toxics: Toxic[];
+  toxics: Toxic<ToxicAttributeTypes>[];
 
   constructor(toxiproxy: Toxiproxy, body: ICreateProxyResponse | IGetProxyResponse) {
     this.toxiproxy = toxiproxy;
@@ -26,7 +26,7 @@ export default class Proxy {
     this.listen = listen;
     this.upstream = upstream;
     this.enabled = enabled;
-    this.toxics = toxics.map((v: any) => new Toxic(this, v));
+    this.toxics = toxics.map((v: any) => new Toxic<ToxicAttributeTypes>(this, v));
   }
 
   getHost() {
@@ -89,6 +89,49 @@ export default class Proxy {
   //       });
   //   });
   // }
+
+  async addToxic(body: ICreateToxicBody<ToxicAttributeTypes>): Promise<Toxic<ToxicAttributeTypes>> {
+    try {
+      // adding the toxic to toxiproxy
+      const toxic = await new Toxic(this, <ICreateToxicResponse<ToxicAttributeTypes>>await rp.post({
+        body: body,
+        json: true,
+        url: `${this.getPath()}/toxics`
+      }));
+
+      // checking whether this proxy has this toxic
+      const hasToxic = this.toxics.reduce((hasToxic, v) => {
+        if (hasToxic) {
+          return hasToxic;
+        }
+
+        if (v.name === toxic.name) {
+          return true;
+        }
+
+        return hasToxic;
+      }, false);
+
+      // appending or replacing
+      if (!hasToxic) {
+        this.toxics.push(toxic);
+      } else {
+        for (const i in this.toxics) {
+          if (this.toxics[i].name === toxic.name) {
+            this.toxics[i] = toxic;
+          }
+        }
+      }
+
+      return toxic;
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
 
   // addToxic(toxic: Toxic): Promise<Toxic> {
   //   return new Promise<Toxic>((resolve, reject) => {

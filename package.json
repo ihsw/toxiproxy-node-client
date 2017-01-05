@@ -7,7 +7,7 @@
   "scripts": {
     "test": "ava -v -s ./dist/tests/*.js ./dist/tests/**/*.js",
     "lint": "tslint ./tests/**/*.ts ./src/**/*.ts && echo linted",
-    "build": "tsc --noUnusedParameters --noUnusedLocals && echo built"
+    "build": "tsc --noUnusedParameters --noUnusedLocals --strictNullChecks && echo built"
   },
   "repository": {
     "type": "git",

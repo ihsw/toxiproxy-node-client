@@ -5,6 +5,7 @@ import {
   ICreateProxyBody,
   ICreateProxyResponse,
   IGetProxyResponse,
+  IPopulateProxiesBody,
   IPopulateProxiesResponse,
   IGetProxiesResponse
 } from "./interfaces";
@@ -39,7 +40,7 @@ export default class Toxiproxy {
     }
   }
 
-  async populate(body: ICreateProxyBody[]): Promise<Proxies> {
+  async populate(body: IPopulateProxiesBody): Promise<Proxies> {
     try {
       const res = <IPopulateProxiesResponse>await rp.post({
         body: body,
