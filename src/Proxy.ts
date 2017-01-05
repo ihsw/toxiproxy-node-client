@@ -92,37 +92,13 @@ export default class Proxy {
 
   async addToxic(body: ICreateToxicBody<ToxicAttributeTypes>): Promise<Toxic<ToxicAttributeTypes>> {
     try {
-      // adding the toxic to toxiproxy
       const toxic = await new Toxic(this, <ICreateToxicResponse<ToxicAttributeTypes>>await rp.post({
         body: body,
         json: true,
         url: `${this.getPath()}/toxics`
       }));
 
-      // checking whether this proxy has this toxic
-      const hasToxic = this.toxics.reduce((hasToxic, v) => {
-        if (hasToxic) {
-          return hasToxic;
-        }
-
-        if (v.name === toxic.name) {
-          return true;
-        }
-
-        return hasToxic;
-      }, false);
-
-      // appending or replacing
-      if (!hasToxic) {
-        this.toxics.push(toxic);
-      } else {
-        for (const i in this.toxics) {
-          if (this.toxics[i].name === toxic.name) {
-            this.toxics[i] = toxic;
-          }
-        }
-      }
-
+      this.toxics.push(toxic);
       return toxic;
     } catch (err) {
       if (!("statusCode" in err)) {
@@ -132,36 +108,4 @@ export default class Proxy {
       throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
     }
   }
-
-  // addToxic(toxic: Toxic): Promise<Toxic> {
-  //   return new Promise<Toxic>((resolve, reject) => {
-  //     const payload = <ICreateToxicBody>{
-  //       attributes: toxic.attributes,
-  //       name: toxic.name,
-  //       stream: toxic.stream,
-  //       toxicity: toxic.toxicity,
-  //       type: toxic.type
-  //     };
-  //     request
-  //       .post(`${this.getHost()}/proxies/${this.name}/toxics`)
-  //       .send(payload)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           return reject(new Error(err.response.error.text));
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           return reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //         }
-
-  //         const toxic = new Toxic(this, {
-  //           attributes: res.body.attributes,
-  //           name: res.body.name,
-  //           stream: res.body.stream,
-  //           toxicity: res.body.toxicity,
-  //           type: res.body.type
-  //         });
-  //         this.toxics.push(toxic);
-  //         resolve(toxic);
-  //       });
-  //   });
-  // }
 }

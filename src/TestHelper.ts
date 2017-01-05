@@ -33,19 +33,7 @@ export const createToxic = async (t: ContextualTestContext, proxy: Proxy, type: 
 
   const toxic = <Toxic<ToxicAttributeTypes>>await proxy.addToxic(body);
   t.is(body.type, toxic.type);
-
-  const hasToxic = proxy.toxics.reduce((hasToxic, v) => {
-    if (hasToxic) {
-      return hasToxic;
-    }
-
-    if (toxic.name === v.name) {
-      return true;
-    }
-
-    return hasToxic;
-  }, false);
-  t.is(true, hasToxic);
+  t.is(toxic.name, proxy.toxics[proxy.toxics.length - 1].name);
 
   return toxic;
 };
