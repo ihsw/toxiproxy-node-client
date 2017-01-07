@@ -22,16 +22,6 @@ test("Proxy Should remove a proxy", async (t) => {
   return proxy.remove();
 });
 
-test("Proxy Should add a timeout toxic", async (t) => {
-  const { proxy } = await createProxy(t, "add-timeout-toxic-test");
-
-  const attributes = <Timeout>{ timeout: 5 * 1000 };
-  const toxic = <Toxic<Timeout>>await createToxic(t, proxy, "timeout", attributes);
-  t.is(attributes.timeout, toxic.attributes.timeout);
-
-  return proxy.remove();
-});
-
 //   t.test("Should refresh toxics", (st: test.Test) => {
 //     const { helper, fail } = setup();
 

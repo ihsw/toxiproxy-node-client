@@ -1,7 +1,7 @@
 import { ContextualTestContext } from "ava";
 import Toxiproxy from "./Toxiproxy";
 import Proxy from "./Proxy";
-import Toxic, { AttributeTypes as ToxicAttributeTypes } from "./Toxic";
+import Toxic from "./Toxic";
 import { ICreateProxyBody, ICreateToxicBody } from "./interfaces";
 // import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
 
@@ -25,13 +25,13 @@ export const createProxy = async (t: ContextualTestContext, name: string): Promi
   return { proxy, toxiproxy };
 };
 
-export const createToxic = async (t: ContextualTestContext, proxy: Proxy, type: string, attributes: ToxicAttributeTypes): Promise<Toxic<ToxicAttributeTypes>> => {
-  const body = <ICreateToxicBody<ToxicAttributeTypes>>{
+export const createToxic = async <T>(t: ContextualTestContext, proxy: Proxy, type: string, attributes: T): Promise<Toxic<T>> => {
+  const body = <ICreateToxicBody<T>>{
     attributes: attributes,
     type: type
   };
 
-  const toxic = <Toxic<ToxicAttributeTypes>>await proxy.addToxic(body);
+  const toxic = <Toxic<T>>await proxy.addToxic(body);
   t.is(body.type, toxic.type);
   t.is(toxic.name, proxy.toxics[proxy.toxics.length - 1].name);
 
