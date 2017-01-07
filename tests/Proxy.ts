@@ -1,10 +1,5 @@
 import { test } from "ava";
-import { createProxy, createToxic } from "../src/TestHelper";
-import Toxic, {
-  Timeout
-  // Latency, Down, Bandwidth,
-  // Slowclose, Timeout, Slicer
-} from "../src/Toxic";
+import { createProxy } from "../src/TestHelper";
 
 test("Proxy Should update a proxy", async (t) => {
   const { proxy } = await createProxy(t, "update-proxy-test");
