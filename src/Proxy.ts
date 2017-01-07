@@ -90,9 +90,9 @@ export default class Proxy {
   //   });
   // }
 
-  async addToxic(body: ICreateToxicBody<ToxicAttributeTypes>): Promise<Toxic<ToxicAttributeTypes>> {
+  async addToxic<T>(body: ICreateToxicBody<T>): Promise<Toxic<T>> {
     try {
-      const toxic = await new Toxic(this, <ICreateToxicResponse<ToxicAttributeTypes>>await rp.post({
+      const toxic = await new Toxic(this, <ICreateToxicResponse<T>>await rp.post({
         body: body,
         json: true,
         url: `${this.getPath()}/toxics`

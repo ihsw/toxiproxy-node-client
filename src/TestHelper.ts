@@ -31,7 +31,7 @@ export const createToxic = async <T>(t: ContextualTestContext, proxy: Proxy, typ
     type: type
   };
 
-  const toxic = <Toxic<T>>await proxy.addToxic(body);
+  const toxic = await proxy.addToxic<T>(body);
   t.is(body.type, toxic.type);
   t.is(toxic.name, proxy.toxics[proxy.toxics.length - 1].name);
 
