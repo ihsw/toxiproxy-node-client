@@ -10,6 +10,7 @@ The recommended way to install `toxiproxy-node-client` is through [NPM](https://
 Once that is installed and you have added `toxiproxy-node-client` to your `package.json` configuration, you can require the package and start using the library.
 
 ## JavaScript (ES5) Usage
+THIS IS OLD! I am currently re-writing the docs. 2017-01-09
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```js
@@ -39,6 +40,7 @@ toxiproxy.createProxy(createBody)
 ```
 
 ## TypeScript Usage
+THIS IS OLD! I am currently re-writing the docs. 2017-01-09
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```typescript
