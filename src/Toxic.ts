@@ -1,7 +1,11 @@
 import * as rp from "request-promise-native";
 import * as HttpStatus from "http-status";
 import Proxy from "./Proxy";
-import { ICreateToxicBody, IGetToxicResponse } from "./interfaces";
+import {
+  ICreateToxicBody,
+  IGetToxicResponse,
+  IUpdateToxicBody, IUpdateToxicResponse
+} from "./interfaces";
 
 export type Direction = "upstream" | "downstream";
 
@@ -39,6 +43,14 @@ export interface Slicer {
 
 export type AttributeTypes = Latency | Down | Bandwidth | Slowclose | Timeout | Slicer;
 
+export interface ToxicJson<T> {
+  name: string;
+  type: Type;
+  stream: Direction;
+  toxicity: number;
+  attributes: T;
+}
+
 export default class Toxic<T> {
   proxy: Proxy;
 
@@ -60,6 +72,16 @@ export default class Toxic<T> {
     this.stream = stream;
     this.toxicity = toxicity;
     this.attributes = attributes;
+  }
+
+  toJson(): ToxicJson<T> {
+    return <ToxicJson<T>>{
+      attributes: this.attributes,
+      name: this.name,
+      stream: this.stream,
+      toxicity: this.toxicity,
+      type: this.type
+    };
   }
 
   getHost() {
@@ -94,6 +116,26 @@ export default class Toxic<T> {
   async refresh(): Promise<void> {
     try {
       const res = <IGetToxicResponse<T>>await rp.get({
+        json: true,
+        url: `${this.getPath()}`
+      });
+      this.parseBody(res);
+
+      return Promise.resolve();
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
+
+  async update(): Promise<void> {
+    try {
+      const body = <IUpdateToxicBody<T>>this.toJson();
+      const res = <IUpdateToxicResponse<T>>await rp.post({
+        body: body,
         json: true,
         url: `${this.getPath()}`
       });

@@ -35,3 +35,15 @@ test("Toxic Should refresh", async (t) => {
 
   return proxy.remove();
 });
+
+test("Toxic Should update", async (t) => {
+  const { proxy } = await createProxy(t, "refresh-toxic-test");
+
+  const attributes = <Latency>{ latency: 1000, jitter: 100 };
+  const toxic = await createToxic(t, proxy, "latency", attributes);
+  const newLatency = toxic.attributes.latency = 2000;
+  await toxic.update();
+  t.is(newLatency, toxic.attributes.latency);
+
+  return proxy.remove();
+});

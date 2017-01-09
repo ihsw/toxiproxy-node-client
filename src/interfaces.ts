@@ -66,7 +66,9 @@ export interface ICreateToxicResponse<T> extends ICreateToxicBody<T> { }
 export interface IGetToxicResponse<T> extends ICreateToxicBody<T> { }
 
 // request & responses for POST /proxies/{proxy}/toxics/{toxic}
-export interface IUpdateToxicBody { }
+export interface IUpdateToxicBody<T> extends ICreateToxicBody<T> { }
+
+export interface IUpdateToxicResponse<T> extends ICreateToxicBody<T> { }
 
 // request & responses for DELETE /proxies/{proxy}/toxics/{toxic}
 // intentionally left blank
