@@ -2,8 +2,8 @@
   "name": "toxiproxy-node-client",
   "version": "v1.0.2",
   "description": "Node Client for Toxiproxy",
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "typings": "./dist/src/index.d.ts",
   "scripts": {
     "test": "ava -v -s ./dist/tests/*.js ./dist/tests/**/*.js",
     "lint": "tslint ./tests/**/*.ts ./src/**/*.ts && echo linted",
