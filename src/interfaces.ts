@@ -21,7 +21,7 @@ export interface ICreateProxyResponse {
   listen: string;
   upstream: string;
   enabled: boolean;
-  toxics: any[];
+  toxics: IGetToxicResponse<any>[];
 }
 
 // request & responses for POST /populate
@@ -49,7 +49,7 @@ export interface IUpdateProxyResponse extends ICreateProxyResponse { }
 // intentionally left blank
 
 // request & responses for GET /proxies/{proxy}/toxics
-export interface IGetToxicsResponse { }
+export interface IGetToxicsResponse<T> extends Array<IGetToxicResponse<T>> { }
 
 // request & responses for POST /proxies/{proxy}/toxics
 export interface ICreateToxicBody<T> {

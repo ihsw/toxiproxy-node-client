@@ -1,5 +1,6 @@
 import { test } from "ava";
-import { createProxy } from "../src/TestHelper";
+import { createProxy, createToxic } from "../src/TestHelper";
+import { Latency } from "../src/Toxic";
 
 test("Proxy Should update a proxy", async (t) => {
   const { proxy } = await createProxy(t, "update-proxy-test");
@@ -17,10 +18,20 @@ test("Proxy Should remove a proxy", async (t) => {
   return proxy.remove();
 });
 
-//   t.test("Should refresh toxics", (st: test.Test) => {
-//     const { helper, fail } = setup();
+test.only("Proxy Should refresh toxics", async (t) => {
+  const { proxy } = await createProxy(t, "remove-test");
 
-//     const proxyName = "refresh-test";
-//     helper.withProxy(proxyName, (proxy) => proxy.refreshToxics()).then(st.end).catch((err) => fail(st, err));
-//   });
-// });
+  const attributes = <Latency>{ latency: 1000, jitter: 100 };
+  const toxic = await createToxic(t, proxy, "latency", attributes);
+  await proxy.refreshToxics();
+  const hasToxic = proxy.toxics.reduce((hasToxic, proxyToxic) => {
+    if (proxyToxic.name === toxic.name) {
+      return true;
+    }
+
+    return hasToxic;
+  }, false);
+  t.is(hasToxic, true);
+
+  return proxy.remove();
+});
