@@ -1,7 +1,7 @@
-// import * as request from "request-promise";
-// import * as HttpStatus from "http-status";
+import * as rp from "request-promise-native";
+import * as HttpStatus from "http-status";
 import Proxy from "./Proxy";
-import { ICreateToxicBody } from "./interfaces";
+import { ICreateToxicBody, IGetToxicResponse } from "./interfaces";
 
 export type Direction = "upstream" | "downstream";
 
@@ -67,43 +67,35 @@ export default class Toxic<T> {
   }
 
   getPath() {
-    return `${this.getHost()}/proxies/${this.proxy.name}/toxics/${this.type}`;
+    return `${this.proxy.getPath()}/toxics/${this.name}`;
   }
 
-  // remove(): Promise<void> {
-  //   return new Promise<void>((resolve, reject) => {
-  //     request
-  //       .delete(this.getPath())
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.NO_CONTENT) {
-  //           reject(new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${res.status}`));
-  //           return;
-  //         }
+  async remove(): Promise<void> {
+    try {
+      await rp.delete({ url: this.getPath() });
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
 
-  //         resolve();
-  //       });
-  //   });
-  // }
+      throw new Error(`Response status was not ${HttpStatus.NO_CONTENT}: ${err.statusCode}`);
+    }
+  }
 
-  // refresh(): Promise<Toxic> {
-  //   return new Promise<Toxic>((resolve, reject) => {
-  //     request
-  //       .get(this.getPath())
-  //       .end((err, res) => {
-  //         if (err) {
-  //           reject(err);
-  //           return;
-  //         } else if (res.status !== HttpStatus.OK) {
-  //           reject(new Error(`Response status was not ${HttpStatus.OK}: ${res.status}`));
-  //           return;
-  //         }
+  async refresh(): Promise<Toxic<T>> {
+    try {
+      const toxic = await new Toxic(this.proxy, <IGetToxicResponse<T>>await rp.get({
+        json: true,
+        url: `${this.getPath()}`
+      }));
 
-  //         this.parseBody(res.body);
-  //         resolve(this);
-  //       });
-  //   });
-  // }
+      return toxic;
+    } catch (err) {
+      if (!("statusCode" in err)) {
+        throw err;
+      }
+
+      throw new Error(`Response status was not ${HttpStatus.OK}: ${err.statusCode}`);
+    }
+  }
 }
