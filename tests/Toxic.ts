@@ -28,9 +28,10 @@ test("Toxic Should refresh", async (t) => {
   const attributes = <Latency>{ latency: 1000, jitter: 100 };
   const toxic = await createToxic(t, proxy, "latency", attributes);
 
-  const refreshedToxic = await toxic.refresh();
-  t.is(toxic.attributes.latency, refreshedToxic.attributes.latency);
-  t.is(toxic.attributes.jitter, refreshedToxic.attributes.jitter);
+  const prevToxicity = toxic.toxicity;
+  toxic.toxicity = 5;
+  await toxic.refresh();
+  t.is(prevToxicity, toxic.toxicity);
 
   return proxy.remove();
 });

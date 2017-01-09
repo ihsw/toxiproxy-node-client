@@ -91,14 +91,15 @@ export default class Toxic<T> {
     }
   }
 
-  async refresh(): Promise<Toxic<T>> {
+  async refresh(): Promise<void> {
     try {
-      const toxic = await new Toxic(this.proxy, <IGetToxicResponse<T>>await rp.get({
+      const res = <IGetToxicResponse<T>>await rp.get({
         json: true,
         url: `${this.getPath()}`
-      }));
+      });
+      this.parseBody(res);
 
-      return toxic;
+      return Promise.resolve();
     } catch (err) {
       if (!("statusCode" in err)) {
         throw err;
