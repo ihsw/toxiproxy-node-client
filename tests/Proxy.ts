@@ -18,7 +18,7 @@ test("Proxy Should remove a proxy", async (t) => {
   return proxy.remove();
 });
 
-test.only("Proxy Should refresh toxics", async (t) => {
+test("Proxy Should refresh toxics", async (t) => {
   const { proxy } = await createProxy(t, "remove-test");
 
   const attributes = <Latency>{ latency: 1000, jitter: 100 };
