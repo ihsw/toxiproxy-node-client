@@ -73,6 +73,15 @@ export default class Toxic<T> {
   async remove(): Promise<void> {
     try {
       await rp.delete({ url: this.getPath() });
+
+      for (const key in this.proxy.toxics) {
+        const toxic = this.proxy.toxics[key];
+        if (toxic.name === this.name) {
+          delete this.proxy.toxics[key];
+        }
+      }
+
+      return Promise.resolve();
     } catch (err) {
       if (!("statusCode" in err)) {
         throw err;

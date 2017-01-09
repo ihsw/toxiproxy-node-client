@@ -7,8 +7,18 @@ test("Toxic Should remove a toxic", async (t) => {
 
   const attributes = <Latency>{ latency: 1000, jitter: 100 };
   const toxic = await createToxic(t, proxy, "latency", attributes);
-
   await toxic.remove();
+
+  // verifying that the toxic has been removed from the proxy's toxic list
+  const hasToxic = proxy.toxics.reduce((hasToxic, proxyToxic) => {
+    if (toxic.name === proxyToxic.name) {
+      return true;
+    }
+
+    return hasToxic;
+  }, false);
+  t.is(hasToxic, false);
+
   return proxy.remove();
 });
 
