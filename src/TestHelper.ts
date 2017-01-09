@@ -3,7 +3,6 @@ import Toxiproxy from "./Toxiproxy";
 import Proxy from "./Proxy";
 import Toxic from "./Toxic";
 import { ICreateProxyBody, ICreateToxicBody } from "./interfaces";
-// import Toxic, { Type as ToxicType, IBody as IToxicBody } from "../src/Toxic";
 
 export interface ICreateProxyHelper {
   proxy: Proxy;
