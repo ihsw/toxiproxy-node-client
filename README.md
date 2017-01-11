@@ -9,63 +9,79 @@ The recommended way to install `toxiproxy-node-client` is through [NPM](https://
 
 Once that is installed and you have added `toxiproxy-node-client` to your `package.json` configuration, you can require the package and start using the library.
 
-## JavaScript (ES5) Usage
-THIS IS OLD! I am currently re-writing the docs. 2017-01-09
+## JavaScript (ES6) Usage
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```js
 // index.js
 "use strict";
-var toxiproxyClient = require("toxiproxy-node-client");
+const toxiproxyClient = require("toxiproxy-node-client");
 
-var toxiproxy = new toxiproxyClient.Toxiproxy("http://localhost:8474");
-var createBody = {
-  name: "ihsw_test_redis_master",
-  listen: "localhost:0",
-  upstream: "localhost:6379"
-};
-toxiproxy.createProxy(createBody)
-  .then((proxy) => {
-    var options = {
-      name: "bandwidth",
-      type: "bandwidth",
-      attributes: { "rate": 1000 },
-      stream: "downstream",
-      toxicity: 1
+const getToxic = (type, attributes) => {
+  return new Promise((resolve, reject) => {
+    const toxiproxy = new toxiproxyClient.Toxiproxy("http://localhost:8474");
+    const proxyBody = {
+      listen: "localhost:0",
+      name: "ihsw_test_redis_master",
+      upstream: "localhost:6379"
     };
-    return proxy.addToxic(new toxiproxyClient.Toxic(proxy, options));
-  })
-  .then((toxic) => console.log(toxic))
-  .catch((err) => console.error(err));
+    toxiproxy.createProxy(proxyBody)
+      .then((proxy) => {
+        const toxicBody = {
+          attributes: attributes,
+          type: type
+        };
+        resolve(proxy.addToxic(new toxiproxyClient.Toxic(proxy, toxicBody)));
+      })
+      .catch(reject);
+  });
+};
+
+// { attributes: { rate: 1000 },
+//   name: 'bandwidth_downstream',
+//   stream: 'downstream',
+//   toxicity: 1,
+//   type: 'bandwidth' }
+getToxic("bandwidth", { rate: 1000 })
+  .then((toxic) => console.log(toxic.toJson()))
+  .catch(console.error);
 ```
 
 ## TypeScript Usage
-THIS IS OLD! I am currently re-writing the docs. 2017-01-09
 Here is an example for creating a proxy that limits a Redis connection to 1000KB/s.
 
 ```typescript
 // index.ts
-import { Toxiproxy, ICreateProxyBody, Toxic, ICreateToxicBody } from "toxiproxy-node-client";
+import {
+    Toxiproxy,
+    ICreateProxyBody,
+    Toxic, ICreateToxicBody, Bandwidth
+} from "toxiproxy-node-client";
 
-const toxiproxy = new Toxiproxy("http://localhost:8474");
-const createBody = <ICreateProxyBody>{
-  listen: "localhost:0",
-  name: "ihsw_test_redis_master",
-  upstream: "localhost:6379"
+const getToxic = async <T>(type: string, attributes: T): Promise<Toxic<T>> => {
+  const toxiproxy = new Toxiproxy("http://localhost:8474");
+  const proxyBody = <ICreateProxyBody>{
+    listen: "localhost:0",
+    name: "ihsw_test_redis_master",
+    upstream: "localhost:6379"
+  };
+  const proxy = await toxiproxy.createProxy(proxyBody);
+
+  const toxicBody = <ICreateToxicBody<T>>{
+      attributes: attributes,
+      type: type
+  };
+  return await proxy.addToxic(new Toxic(proxy, toxicBody));
 };
-toxiproxy.createProxy(createBody)
-  .then((proxy) => {
-    const options = <ICreateToxicBody>{
-      attributes: { rate: 1000 },
-      name: "bandwidth",
-      stream: "downstream",
-      toxicity: 1,
-      type: "bandwidth"
-    };
-    return proxy.addToxic(new Toxic(proxy, options));
-  })
-  .then((toxic) => console.log(toxic))
-  .catch((err) => console.error(err));
+
+// { attributes: { rate: 1000 },
+//   name: 'bandwidth_downstream',
+//   stream: 'downstream',
+//   toxicity: 1,
+//   type: 'bandwidth' }
+getToxic("bandwidth", <Bandwidth>{ rate: 1000 })
+  .then((toxic) => console.log(toxic.toJson()))
+  .catch(console.error);
 ```
 
 ## Documentation

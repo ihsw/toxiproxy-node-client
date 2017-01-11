@@ -3,7 +3,7 @@ const toxiproxyClient = require("../dist/src");
 
 const getToxic = (type, attributes) => {
   return new Promise((resolve, reject) => {
-    const toxiproxy = new toxiproxyClient.Toxiproxy("http://192.168.99.100:8474");
+    const toxiproxy = new toxiproxyClient.Toxiproxy("http://localhost:8474");
     const proxyBody = {
       listen: "localhost:0",
       name: "ihsw_test_redis_master",
