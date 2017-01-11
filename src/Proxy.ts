@@ -1,7 +1,10 @@
 import * as rp from "request-promise-native";
 import * as HttpStatus from "http-status";
 import Toxiproxy from "./Toxiproxy";
-import Toxic, { AttributeTypes as ToxicAttributeTypes } from "./Toxic";
+import Toxic, {
+  AttributeTypes as ToxicAttributeTypes,
+  ToxicJson
+} from "./Toxic";
 import {
   ICreateProxyResponse,
   IGetProxyResponse,
@@ -9,6 +12,14 @@ import {
   ICreateToxicBody, ICreateToxicResponse,
   IGetToxicsResponse
 } from "./interfaces";
+
+export interface ProxyJson {
+  name: string;
+  listen: string;
+  upstream: string;
+  enabled: boolean;
+  toxics: ToxicJson<any>[];
+}
 
 export default class Proxy {
   toxiproxy: Toxiproxy;
@@ -28,6 +39,16 @@ export default class Proxy {
     this.upstream = upstream;
     this.enabled = enabled;
     this.setToxics(toxics);
+  }
+
+  toJson(): ProxyJson {
+    return <ProxyJson>{
+      enabled: this.enabled,
+      listen: this.listen,
+      name: this.name,
+      toxics: this.toxics.map((toxic) => toxic.toJson()),
+      upstream: this.upstream
+    };
   }
 
   setToxics(toxics: IGetToxicsResponse<any>) {
