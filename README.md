@@ -31,8 +31,9 @@ const getToxic = (type, attributes) => {
           attributes: attributes,
           type: type
         };
-        resolve(proxy.addToxic(new toxiproxyClient.Toxic(proxy, toxicBody)));
+        return proxy.addToxic(new toxiproxyClient.Toxic(proxy, toxicBody));
       })
+      .then(resolve)
       .catch(reject);
   });
 };
