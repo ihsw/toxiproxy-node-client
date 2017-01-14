@@ -1,6 +1,6 @@
 {
   "name": "toxiproxy-node-client",
-  "version": "v2.0.4",
+  "version": "v2.0.5",
   "description": "Node Client for Toxiproxy",
   "main": "./dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
@@ -27,7 +27,6 @@
     "typescript": "^2.1.4"
   },
   "dependencies": {
-    "async": "^1.5.2",
     "http-status": "^0.2.3",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3"
