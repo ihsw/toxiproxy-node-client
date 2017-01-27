@@ -1,5 +1,5 @@
 "use strict";
-const toxiproxyClient = require("../dist/src");
+const toxiproxyClient = require("../dist/");
 
 const getToxic = (type, attributes) => {
   return new Promise((resolve, reject) => {

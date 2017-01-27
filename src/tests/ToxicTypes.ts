@@ -1,9 +1,9 @@
 import { test } from "ava";
-import { createProxy, createToxic } from "../src/TestHelper";
+import { createProxy, createToxic } from "../TestHelper";
 import {
   Latency, Bandwidth,
   Slowclose, Timeout, Slicer
-} from "../src/Toxic";
+} from "../Toxic";
 
 test("Proxy Should add a latency toxic", async (t) => {
   const { proxy } = await createProxy(t, "add-latency-toxic-test");
