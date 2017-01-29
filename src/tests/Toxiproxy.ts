@@ -1,7 +1,7 @@
 import { test } from "ava";
-import { createProxy, toxiproxyUrl } from "../src/TestHelper";
-import Toxiproxy from "../src/Toxiproxy";
-import { ICreateProxyBody } from "../src/interfaces";
+import { createProxy, toxiproxyUrl } from "../TestHelper";
+import Toxiproxy from "../Toxiproxy";
+import { ICreateProxyBody } from "../interfaces";
 
 test("Toxiproxy Should create a proxy", async (t) => {
   const { proxy } = await createProxy(t, "create-test");

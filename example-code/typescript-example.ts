@@ -2,7 +2,7 @@ import {
     Toxiproxy,
     ICreateProxyBody,
     Toxic, ICreateToxicBody, Bandwidth
-} from "../src";
+} from "../dist/";
 
 const getToxic = async <T>(type: string, attributes: T): Promise<Toxic<T>> => {
   const toxiproxy = new Toxiproxy("http://localhost:8474");

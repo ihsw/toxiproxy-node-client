@@ -3,13 +3,20 @@
         "module": "commonjs",
         "target": "es6",
         "noImplicitAny": false,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "strictNullChecks": true,
         "sourceMap": false,
         "removeComments": true,
         "declaration": true,
+        "rootDir": "./src",
         "outDir": "./dist"
     },
     "filesGlob": [
-        "**/*.ts",
-        "!node_modules/**"
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "./example-code",
+        "./node_modules"
     ]
 }

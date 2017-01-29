@@ -2,12 +2,14 @@
   "name": "toxiproxy-node-client",
   "version": "v2.0.5",
   "description": "Node Client for Toxiproxy",
-  "main": "./dist/src/index.js",
-  "typings": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "scripts": {
-    "test": "ava -v -s ./dist/tests/*.js ./dist/tests/**/*.js",
-    "lint": "tslint ./tests/**/*.ts ./src/**/*.ts && echo linted",
-    "build": "tsc --noUnusedParameters --noUnusedLocals --strictNullChecks && echo built"
+    "clean": "del ./dist",
+    "test": "npm run build && ava -v -s ./dist/tests/**/*.js",
+    "lint": "tslint ./src/**/*.ts && echo linted",
+    "build": "npm run clean && tsc && echo built",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
     "@types/http-status": "^0.2.29",
     "@types/request-promise-native": "^1.0.2",
     "ava": "^0.17.0",
+    "del-cli": "^0.2.1",
     "tslint": "^4.2.0",
     "typescript": "^2.1.4"
   },
