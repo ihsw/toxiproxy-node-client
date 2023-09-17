@@ -17,42 +17,125 @@ export type Type = "latency"
 | "limit_data"
 | "reset_peer";
 
+/**
+ * Add a delay to all data going through the proxy. The delay is equal to latency +/- jitter.
+ */
 export interface Latency {
+    /**
+     * time in milliseconds
+     */
     latency: number;
+    /**
+     * time in milliseconds
+     */
     jitter: number;
 }
 
+/**
+ * Bringing a service down is not technically a toxic in the implementation of Toxiproxy.
+ * This is done by POSTing to /proxies/{proxy} and setting the enabled field to false.
+ */
 export interface Down { }
 
+/**
+ * Limit a connection to a maximum number of kilobytes per second.
+ */
 export interface Bandwidth {
+    /**
+     * rate in KB/s
+     */
     rate: number;
 }
 
+/**
+ * Delay the TCP socket from closing until delay has elapsed.
+ */
 export interface Slowclose {
+    /**
+     * time in milliseconds
+     */
     delay: number;
 }
 
+/**
+ * Stops all data from getting through, and closes the connection after timeout.
+ * If timeout is 0, the connection won't close, and data will be delayed until the toxic is removed.
+ */
 export interface Timeout {
+    /**
+     * time in milliseconds
+     */
     timeout: number;
 }
 
+/**
+ * Slices TCP data up into small bits, optionally adding a delay between each sliced "packet".
+ */
 export interface Slicer {
+    /**
+     * size in bytes of an average packet
+     */
     average_size: number;
+    /**
+     * variation in bytes of an average packet (should be smaller than average_size)
+     */
     size_variation: number;
+    /**
+     * time in microseconds to delay each packet by
+     */
     delay: number;
 }
 
+/**
+ * Simulate TCP RESET (Connection reset by peer) on the connections
+ * by closing the stub Input immediately or after a timeout.
+ */
 export interface ResetPeer {
+    /**
+     * time in milliseconds
+     */
     timeout: number;
 }
 
-export type AttributeTypes = Latency | Down | Bandwidth | Slowclose | Timeout | Slicer | ResetPeer;
+/**
+ * Closes connection when transmitted data exceeded limit.
+ */
+export interface LimitData {
+    /**
+     * number of bytes it should transmit before connection is closed
+     */
+    bytes: number;
+}
+
+export type AttributeTypes = Latency | Down | Bandwidth | Slowclose | Timeout | Slicer | ResetPeer | LimitData;
 
 export interface ToxicJson<T> {
+    /**
+     * Toxic name
+     */
     name: string;
+    /**
+     * Toxic type
+     */
     type: Type;
+    /**
+     * The stream direction must be either upstream or downstream.
+     * upstream applies the toxic on the client -> server connection,
+     * while downstream applies the toxic on the server -> client connection.
+     * This can be used to modify requests and responses separately.
+     *
+     * defaults to downstream
+     */
     stream: Direction;
+    /**
+     * Percentage of connections the toxic will affect.
+     *
+     * defaults to 1.0 (100%)
+     */
     toxicity: number;
+    /**
+     * Toxic attributes
+     */
     attributes: T;
 }
 

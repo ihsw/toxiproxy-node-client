@@ -7,7 +7,7 @@
         "noUnusedLocals": true,
       "strictNullChecks": true,
       "sourceMap": false,
-        "removeComments": true,
+        "removeComments": false,
         "declaration": true,
         "rootDir": "./src",
         "outDir": "./dist"

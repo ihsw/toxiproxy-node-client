@@ -1,7 +1,7 @@
 import {createProxy, createToxic, removeAllProxies} from "../TestHelper";
 import {
     Latency, Bandwidth,
-    Slowclose, Timeout, Slicer, ResetPeer
+    Slowclose, Timeout, Slicer, ResetPeer, LimitData
 } from "../Toxic";
 import { expect, test} from "@jest/globals";
 
@@ -72,6 +72,16 @@ test("Proxy Should add a reset_peer toxic", async () => {
     const attributes = <ResetPeer>{ timeout: 1000 };
     const toxic = await createToxic(proxy, "reset_peer", attributes);
     expect(attributes.timeout).toBe(toxic.attributes.timeout);
+
+    return proxy.remove();
+});
+
+test("Proxy Should add a limit_data toxic", async () => {
+    const { proxy } = await createProxy("add-limit_data-toxic-test");
+
+    const attributes = <LimitData>{ bytes: 42 };
+    const toxic = await createToxic(proxy, "limit_data", attributes);
+    expect(attributes.bytes).toBe(toxic.attributes.bytes);
 
     return proxy.remove();
 });
