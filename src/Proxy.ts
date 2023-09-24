@@ -1,7 +1,5 @@
-import axios from "axios";
 import Toxiproxy from "./Toxiproxy";
 import Toxic, {
-    AttributeTypes as ToxicAttributeTypes,
     ToxicJson
 } from "./Toxic";
 import {
@@ -9,8 +7,9 @@ import {
     IGetProxyResponse,
     IUpdateProxyBody, IUpdateProxyResponse,
     ICreateToxicBody, ICreateToxicResponse,
-    IGetToxicsResponse
+    IGetToxicResponse
 } from "./interfaces";
+import { AxiosInstance } from "axios";
 
 export interface ProxyJson {
     name: string;
@@ -21,24 +20,27 @@ export interface ProxyJson {
 }
 
 export default class Proxy {
-    toxiproxy: Toxiproxy;
+    readonly toxiproxy: Toxiproxy;
+    readonly api: AxiosInstance;
 
-    name: string;
-    listen: string;
-    upstream: string;
-    enabled: boolean;
-    toxics: Toxic<ToxicAttributeTypes>[];
+    readonly name: string;
+    readonly listen: string;
+    readonly upstream: string;
+    readonly enabled: boolean;
 
     constructor(toxiproxy: Toxiproxy, body: ICreateProxyResponse | IGetProxyResponse) {
-        this.toxics = [];
+        this.api = toxiproxy.api;
         this.toxiproxy = toxiproxy;
 
-        const { name, listen, upstream, enabled, toxics } = body;
+        const { name, listen, upstream, enabled } = body;
         this.name = name;
         this.listen = listen;
         this.upstream = upstream;
         this.enabled = enabled;
-        this.setToxics(toxics);
+    }
+
+    getToxiproxy(): Toxiproxy {
+        return this.toxiproxy;
     }
 
     toJson(): ProxyJson {
@@ -46,13 +48,8 @@ export default class Proxy {
             enabled: this.enabled,
             listen: this.listen,
             name: this.name,
-            toxics: this.toxics.map((toxic) => toxic.toJson()),
             upstream: this.upstream
         };
-    }
-
-    setToxics(toxics: IGetToxicsResponse<any>) {
-        this.toxics = toxics.map((v: any) => new Toxic<ToxicAttributeTypes>(this, v));
     }
 
     getHost() {
@@ -63,31 +60,50 @@ export default class Proxy {
         return `${this.getHost()}/proxies/${this.name}`;
     }
 
+    /**
+     * Deletes the proxy from the server.
+     */
     async remove(): Promise<void> {
-        await axios.delete(this.getPath());
+        await this.api.delete(this.getPath());
     }
 
-    async update(): Promise<Proxy> {
-        const body = <IUpdateProxyBody>{
-            enabled: this.enabled,
-            listen: this.listen,
-            upstream: this.upstream
-        };
-
-        const res = await axios.post<IUpdateProxyResponse>(this.getPath(), body);
-        return new Proxy(this.toxiproxy, res.data);
+    /**
+     * Updates the existing proxy on the server (e.g. disable an enabled proxy).
+     *
+     * @returns updated proxy
+     */
+    async update(body: IUpdateProxyBody): Promise<Proxy> {
+        return await this.api.post<IUpdateProxyResponse>(this.getPath(), body)
+            .then((response) => {
+                return new Proxy(this.toxiproxy, response.data);
+            });
     }
 
-    async refreshToxics(): Promise<void> {
-        const res = await axios.get<IGetToxicsResponse<any>>(`${this.getPath()}/toxics`);
-        this.setToxics(res.data);
-    }
-
+    /**
+     * Adds a new toxic to the proxy.
+     *
+     * @param body toxic attributes
+     * @returns toxic
+     */
     async addToxic<T>(body: ICreateToxicBody<T>): Promise<Toxic<T>> {
-        const response = await axios.post<ICreateToxicResponse<T>>(`${this.getPath()}/toxics`, body);
-        const toxic = new Toxic<T>(this, response.data);
+        const result = await this.api.post<ICreateToxicResponse<T>>(`${this.getPath()}/toxics`, body)
+            .then((response) => {
+                return response.data;
+            });
+        return new Toxic<T>(this.api, this.getPath(), result);
+    }
 
-        this.toxics.push(toxic as Toxic<ToxicAttributeTypes>);
-        return toxic;
+    /**
+     * Gets the toxic from the proxy.
+     *
+     * @param name toxic name
+     * @returns toxic
+     */
+    async getToxic<T>(name: string): Promise<Toxic<T>> {
+        const result = await this.api.get<IGetToxicResponse<T>>(`${this.getPath()}/toxics/${name}`)
+            .then((response) => {
+                return response.data;
+            });
+        return new Toxic<T>(this.api, this.getPath(), result);
     }
 }

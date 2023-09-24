@@ -1,53 +1,55 @@
-import {createProxy, createToxic, removeAllProxies} from "../TestHelper";
+import { createProxy, createToxic, removeAllProxies } from "../TestHelper";
 import { Latency } from "../Toxic";
-import { expect, test} from "@jest/globals";
+import { expect, test } from "@jest/globals";
+import { IUpdateToxicBody } from "../interfaces";
 
 beforeAll(async () => {
     await removeAllProxies();
 });
 
-test("Toxic Should remove a toxic", async () => {
+test("CRUD for Toxics", async () => {
     const { proxy } = await createProxy("remove-toxic-test");
 
+    // Create
     const attributes = <Latency>{ latency: 1000, jitter: 100 };
     const toxic = await createToxic(proxy, "latency", attributes);
-    await toxic.remove();
+    expect(toxic.name).toBe("latency_downstream");
+    expect(toxic.toxicity).toBe(1);
+    expect(toxic.attributes.latency).toBe(1000);
+    expect(toxic.attributes.jitter).toBe(100);
 
-    // verifying that the toxic has been removed from the proxy's toxic list
-    const hasToxic = proxy.toxics.reduce((hasToxic, proxyToxic) => {
-        if (toxic.name === proxyToxic.name) {
-            return true;
+    // Retrieve
+    const toxicFromServer = await proxy.getToxic(toxic.name);
+    expect(toxicFromServer.name).toBe(toxic.name);
+    expect(toxicFromServer.type).toBe(toxic.type);
+    expect(toxicFromServer.stream).toBe(toxic.stream);
+    expect(toxicFromServer.toxicity).toBe(toxic.toxicity);
+
+    // Update
+    const updatedToxic = await toxic.update(
+        <IUpdateToxicBody<Latency>>{
+            attributes: <Latency>{ latency: 12345, jitter: 42 }
         }
+    );
+    expect(updatedToxic.attributes.latency).toBe(12345);
+    expect(updatedToxic.attributes.jitter).toBe(42);
 
-        return hasToxic;
-    }, false);
-    expect(hasToxic).toBe(false);
-
-    return proxy.remove();
-});
-
-test("Toxic Should refresh", async () => {
-    const { proxy } = await createProxy("refresh-toxic-test");
-
-    const attributes = <Latency>{ latency: 1000, jitter: 100 };
-    const toxic = await createToxic(proxy, "latency", attributes);
-
-    const prevToxicity = toxic.toxicity;
-    toxic.toxicity = 5;
-    await toxic.refresh();
-    expect(prevToxicity).toBe(toxic.toxicity);
+    // Delete
+    await toxic.remove();
+    await proxy.getToxic("latency").catch((error) => {
+        expect(error.message).toBe("Request failed with status code 404");
+    });
 
     return proxy.remove();
 });
 
-test("Toxic Should update", async () => {
-    const { proxy } = await createProxy( "refresh-toxic-test");
+test("Creating the same Toxic twice should result in an error", async () => {
+    const { proxy } = await createProxy("duplicate-toxic-test");
 
     const attributes = <Latency>{ latency: 1000, jitter: 100 };
-    const toxic = await createToxic(proxy, "latency", attributes);
-    const newLatency = toxic.attributes.latency = 2000;
-    await toxic.update();
-    expect(newLatency).toBe(toxic.attributes.latency);
-
+    await createToxic(proxy, "latency", attributes);
+    await createToxic(proxy, "latency", attributes).catch((error) => {
+        expect(error.message).toBe("Request failed with status code 409");
+    });
     return proxy.remove();
 });
