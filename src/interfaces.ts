@@ -1,37 +1,94 @@
 import {
-  Type as ToxicType,
-  Direction as ToxicDirection
+    Type as ToxicType,
+    Direction as ToxicDirection
 } from "./Toxic";
 
 // misc
 export interface IProxyBody {
-  name: string;
-  listen: string;
-  upstream: string;
-  enabled?: boolean;
+    /**
+     * proxy name
+     */
+    name: string;
+    /**
+     * listen address (localhost or IP address:port)
+     *
+     * Example: "localhost:12345" will open a proxy on localhost, port 12345
+     */
+    listen: string;
+    /**
+     * proxy upstream address (dns name or IP:port)
+     *
+     * Example: "mongodb:27017" will proxy to a mongodb instance running on mongodb host at port 27017
+     */
+    upstream: string;
+    /**
+     * true/false (defaults to true on creation)
+     */
+    enabled?: boolean;
 }
 
 export interface IProxyResponse {
-  name: string;
-  listen: string;
-  upstream: string;
-  enabled: boolean;
-  toxics: IToxicResponse<any>[];
+    /**
+     * proxy name
+     */
+    name: string;
+    /**
+     * listen address (localhost or IP address:port)
+     *
+     * Example: "localhost:12345" will open a proxy on localhost, port 12345
+     */
+    listen: string;
+    /**
+     * proxy upstream address (dns name or IP:port)
+     *
+     * Example: "mongodb:27017" will proxy to a mongodb instance running on mongodb host at port 27017
+     */
+    upstream: string;
+    /**
+     * true/false (defaults to true on creation)
+     */
+    enabled: boolean;
+    /**
+     * list of toxics
+     */
+    toxics: IToxicResponse<any>[];
 }
 
 export interface IToxicBody<T> {
-  name: string;
-  stream: ToxicDirection;
-  type: ToxicType;
-  toxicity: number;
-  attributes: T;
+    /**
+     * Toxic name
+     */
+    name: string;
+    /**
+     * The stream direction must be either upstream or downstream.
+     * upstream applies the toxic on the client -> server connection,
+     * while downstream applies the toxic on the server -> client connection.
+     * This can be used to modify requests and responses separately.
+     *
+     * defaults to downstream
+     */
+    stream: ToxicDirection;
+    /**
+      * Toxic type
+      */
+    type: ToxicType;
+    /**
+      * Percentage of connections the toxic will affect.
+      *
+      * defaults to 1.0 (100%)
+      */
+    toxicity: number;
+    /**
+    * Toxic attributes
+    */
+    attributes: T;
 }
 
 export interface IToxicResponse<T> extends IToxicBody<T> { }
 
 // request & responses for GET /proxies
 export interface IGetProxiesResponse {
-  [name: string]: IGetProxyResponse;
+    [name: string]: IGetProxyResponse;
 }
 
 // request & responses for POST /proxies
@@ -42,7 +99,7 @@ export interface ICreateProxyResponse extends IProxyResponse { }
 export interface IPopulateProxiesBody extends Array<IProxyBody> { }
 
 export interface IPopulateProxiesResponse {
-  proxies: IProxyResponse[];
+    proxies: IProxyResponse[];
 }
 
 // request & responses for GET /proxies/{proxy}
@@ -50,9 +107,22 @@ export interface IGetProxyResponse extends IProxyResponse { }
 
 // request & responses for POST /proxies/{proxy}
 export interface IUpdateProxyBody {
-  enabled: boolean;
-  listen: string;
-  upstream: string;
+    /**
+     * true/false
+     */
+    enabled: boolean;
+    /**
+     * listen address (localhost or IP address:port)
+     *
+     * Example: "localhost:12345" will open a proxy on localhost, port 12345
+     */
+    listen: string;
+    /**
+     * proxy upstream address (dns name or IP:port)
+     *
+     * Example: "mongodb:27017" will proxy to a mongodb instance running on mongodb host at port 27017
+     */
+    upstream: string;
 }
 
 export interface IUpdateProxyResponse extends IProxyResponse { }

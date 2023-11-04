@@ -83,3 +83,10 @@ getToxic("bandwidth", <Bandwidth>{ rate: 1000 })
 
 ## Documentation
 Additional examples can be found in the `examples` directory for expected usage.
+
+## Docker setup for development and testing
+
+A Toxiproxy instance is needed to run the tests. The easiest way to get one is to use the official Docker image which will make it available on port 8474. The URL (http://localhost:8474) is hard-coded in the tests.
+```
+docker run --rm -p 8474:8474 ghcr.io/shopify/toxiproxy:latest
+```

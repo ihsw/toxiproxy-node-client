@@ -5,9 +5,9 @@
         "noImplicitAny": false,
         "noUnusedParameters": true,
         "noUnusedLocals": true,
-        "strictNullChecks": true,
-        "sourceMap": false,
-        "removeComments": true,
+      "strictNullChecks": true,
+      "sourceMap": false,
+        "removeComments": false,
         "declaration": true,
         "rootDir": "./src",
         "outDir": "./dist"
@@ -19,4 +19,5 @@
         "./example-code",
         "./node_modules"
     ]
-}
+  }
+  
