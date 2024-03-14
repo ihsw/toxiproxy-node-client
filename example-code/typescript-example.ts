@@ -15,7 +15,7 @@ const getToxic = async <T>(type: string, attributes: T): Promise<Toxic<T>> => {
         attributes: attributes,
         type: type
     };
-    return await proxy.addToxic(new Toxic(proxy, toxicBody));
+    return await proxy.addToxic(toxicBody);
 };
 
 // { attributes: { rate: 1000 },

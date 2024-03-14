@@ -16,32 +16,20 @@ Here is an example for creating a proxy that limits a Redis connection to 1000KB
 // index.js
 "use strict";
 const toxiproxyClient = require("toxiproxy-node-client");
-
-const getToxic = (type, attributes) => {
-  const toxiproxy = new toxiproxyClient.Toxiproxy("http://localhost:8474");
-  const proxyBody = {
-    listen: "localhost:0",
-    name: "ihsw_test_redis_master",
-    upstream: "localhost:6379"
-  };
-  return toxiproxy.createProxy(proxyBody)
-    .then((proxy) => {
-      const toxicBody = {
-        attributes: attributes,
-        type: type
-      };
-      return proxy.addToxic(new toxiproxyClient.Toxic(proxy, toxicBody));
-    });
+const toxiproxy = new toxiproxyClient.Toxiproxy("http://localhost:8474");
+const proxyBody = {
+  listen: "localhost:0",
+  name: "redis",
+  upstream: "redis:6379"
+};
+const toxic = toxiproxy.createProxy(proxyBody)
+  .then((proxy) => {
+    const toxicBody = {
+      attributes: { rate: 1000 },
+      type: "bandwidth"
+    };
+    return proxy.addToxic(toxicBody);
   });
-
-// { attributes: { rate: 1000 },
-//   name: 'bandwidth_downstream',
-//   stream: 'downstream',
-//   toxicity: 1,
-//   type: 'bandwidth' }
-getToxic("bandwidth", { rate: 1000 })
-  .then((toxic) => console.log(toxic.toJson()))
-  .catch(console.error);
 ```
 
 ## TypeScript Usage
@@ -55,30 +43,19 @@ import {
     Toxic, ICreateToxicBody, Bandwidth
 } from "toxiproxy-node-client";
 
-const getToxic = async <T>(type: string, attributes: T): Promise<Toxic<T>> => {
-  const toxiproxy = new Toxiproxy("http://localhost:8474");
-  const proxyBody = <ICreateProxyBody>{
-    listen: "localhost:0",
-    name: "ihsw_test_redis_master",
-    upstream: "localhost:6379"
-  };
-  const proxy = await toxiproxy.createProxy(proxyBody);
-
-  const toxicBody = <ICreateToxicBody<T>>{
-      attributes: attributes,
-      type: type
-  };
-  return await proxy.addToxic(new Toxic(proxy, toxicBody));
+const toxiproxy = new Toxiproxy("http://localhost:8474");
+const proxyBody = {
+  listen: "localhost:0",
+  name: "redis",
+  upstream: "redis:6379"
 };
+const proxy = await toxiproxy.createProxy(proxyBody);
 
-// { attributes: { rate: 1000 },
-//   name: 'bandwidth_downstream',
-//   stream: 'downstream',
-//   toxicity: 1,
-//   type: 'bandwidth' }
-getToxic("bandwidth", <Bandwidth>{ rate: 1000 })
-  .then((toxic) => console.log(toxic.toJson()))
-  .catch(console.error);
+const toxicBody = <ICreateToxicBody<T>>{
+  attributes: <Bandwidth>{ rate: 1000 },
+  type: "bandwidth"
+};
+const toxic = proxy.addToxic(toxicBody);
 ```
 
 ## Documentation

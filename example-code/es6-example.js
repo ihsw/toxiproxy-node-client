@@ -14,7 +14,7 @@ const getToxic = (type, attributes) => {
         attributes: attributes,
         type: type
       };
-      return proxy.addToxic(new toxiproxyClient.Toxic(proxy, toxicBody));
+      return proxy.addToxic(toxicBody);
     });
 };
 

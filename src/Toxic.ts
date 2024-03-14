@@ -1,10 +1,8 @@
-import axios from "axios";
-import Proxy from "./Proxy";
 import {
     ICreateToxicBody,
-    IGetToxicResponse,
     IUpdateToxicBody, IUpdateToxicResponse
 } from "./interfaces";
+import { AxiosInstance } from "axios";
 
 export type Direction = "upstream" | "downstream";
 
@@ -24,11 +22,11 @@ export interface Latency {
     /**
      * time in milliseconds
      */
-    latency: number;
+    readonly latency: number;
     /**
      * time in milliseconds
      */
-    jitter: number;
+    readonly jitter: number;
 }
 
 /**
@@ -44,7 +42,7 @@ export interface Bandwidth {
     /**
      * rate in KB/s
      */
-    rate: number;
+    readonly rate: number;
 }
 
 /**
@@ -54,7 +52,7 @@ export interface Slowclose {
     /**
      * time in milliseconds
      */
-    delay: number;
+    readonly delay: number;
 }
 
 /**
@@ -65,7 +63,7 @@ export interface Timeout {
     /**
      * time in milliseconds
      */
-    timeout: number;
+    readonly timeout: number;
 }
 
 /**
@@ -75,15 +73,15 @@ export interface Slicer {
     /**
      * size in bytes of an average packet
      */
-    average_size: number;
+    readonly average_size: number;
     /**
      * variation in bytes of an average packet (should be smaller than average_size)
      */
-    size_variation: number;
+    readonly size_variation: number;
     /**
      * time in microseconds to delay each packet by
      */
-    delay: number;
+    readonly delay: number;
 }
 
 /**
@@ -94,7 +92,7 @@ export interface ResetPeer {
     /**
      * time in milliseconds
      */
-    timeout: number;
+    readonly timeout: number;
 }
 
 /**
@@ -104,7 +102,7 @@ export interface LimitData {
     /**
      * number of bytes it should transmit before connection is closed
      */
-    bytes: number;
+    readonly bytes: number;
 }
 
 export type AttributeTypes = Latency | Down | Bandwidth | Slowclose | Timeout | Slicer | ResetPeer | LimitData;
@@ -113,11 +111,11 @@ export interface ToxicJson<T> {
     /**
      * Toxic name
      */
-    name: string;
+    readonly name: string;
     /**
      * Toxic type
      */
-    type: Type;
+    readonly type: Type;
     /**
      * The stream direction must be either upstream or downstream.
      * upstream applies the toxic on the client -> server connection,
@@ -126,44 +124,36 @@ export interface ToxicJson<T> {
      *
      * defaults to downstream
      */
-    stream: Direction;
+    readonly stream: Direction;
     /**
      * Percentage of connections the toxic will affect.
      *
      * defaults to 1.0 (100%)
      */
-    toxicity: number;
+    readonly toxicity: number;
     /**
      * Toxic attributes
      */
-    attributes: T;
+    readonly attributes: T;
 }
 
 export default class Toxic<T> {
-    proxy: Proxy;
+    readonly proxyPath: string;
+    readonly api: AxiosInstance;
+    readonly name: string;
+    readonly type: Type;
+    readonly stream: Direction;
+    readonly toxicity: number;
+    readonly attributes: T;
 
-    name: string;
-    type: Type;
-    stream: Direction;
-    toxicity: number;
-    attributes: T;
-
-    constructor(proxy: Proxy, body: ICreateToxicBody<T>) {
+    constructor(api: AxiosInstance, proxyPath: string, body: ICreateToxicBody<T>) {
+        this.api = api;
+        this.proxyPath = proxyPath;
         this.name = body.name;
         this.type = body.type;
-        this.proxy = proxy;
         this.stream = body.stream;
         this.toxicity = body.toxicity;
         this.attributes = body.attributes;
-    }
-
-    parseBody(body: ICreateToxicBody<T>) {
-        const { name, type, stream, toxicity, attributes } = body;
-        this.name = name;
-        this.type = type;
-        this.stream = stream;
-        this.toxicity = toxicity;
-        this.attributes = attributes;
     }
 
     toJson(): ToxicJson<T> {
@@ -176,39 +166,27 @@ export default class Toxic<T> {
         };
     }
 
-    getHost() {
-        return this.proxy.getHost();
-    }
-
     getPath() {
-        return `${this.proxy.getPath()}/toxics/${this.name}`;
+        return `${this.proxyPath}/toxics/${this.name}`;
     }
 
+    /**
+     * Deletes the toxic from the server.
+     */
     async remove(): Promise<void> {
-        await axios.delete(this.getPath());
-
-        for (const key in this.proxy.toxics) {
-            const toxic = this.proxy.toxics[key];
-            if (toxic.name === this.name) {
-                delete this.proxy.toxics[key];
-            }
-        }
-
-        return Promise.resolve();
+        return this.api.delete(this.getPath());
     }
 
-    async refresh(): Promise<void> {
-        const res = await  axios.get<IGetToxicResponse<T>>(this.getPath());
-        this.parseBody(res.data);
-
-        return Promise.resolve();
-    }
-
-    async update(): Promise<void> {
-        const body = <IUpdateToxicBody<T>>this.toJson();
-        const res = await axios.post<IUpdateToxicResponse<T>>(this.getPath(), body);
-        this.parseBody(res.data);
-
-        return Promise.resolve();
+    /**
+     * Updates the toxic's attributes on the server.
+     *
+     * @param body Toxic attributes to update
+     * @returns Toxic with updated attributes
+     */
+    async update(body: IUpdateToxicBody<T>): Promise<Toxic<T>> {
+        return await this.api.post<IUpdateToxicResponse<T>>(this.getPath(), body)
+            .then((response) => {
+                return new Toxic(this.api, this.proxyPath, response.data);
+            });
     }
 }

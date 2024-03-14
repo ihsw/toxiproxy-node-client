@@ -143,12 +143,3 @@ export interface IGetToxicResponse<T> extends IToxicResponse<T> { }
 // request & responses for POST /proxies/{proxy}/toxics/{toxic}
 export interface IUpdateToxicBody<T> extends IToxicBody<T> { }
 export interface IUpdateToxicResponse<T> extends IToxicResponse<T> { }
-
-// request & responses for DELETE /proxies/{proxy}/toxics/{toxic}
-// intentionally left blank
-
-// request & responses for POST /reset
-// intentionally left blank
-
-// request & responses for GET /version
-// intentionally left blank
