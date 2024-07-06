@@ -32,7 +32,7 @@ export default class Toxiproxy {
 
     constructor(host: string) {
         this.api = axios.create();
-        this.api.interceptors.response.use((response) => response, (error) => {  
+        this.api.interceptors.response.use((response) => response, (error) => {
             if (error instanceof AxiosError) {
                 // Return a simplified error object to avoid "TypeError: Converting circular structure to JSON".
                 // Really not sure why this is not the default behavior.
