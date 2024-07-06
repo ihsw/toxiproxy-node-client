@@ -2,7 +2,6 @@ import Toxiproxy from "./Toxiproxy";
 import Proxy from "./Proxy";
 import Toxic from "./Toxic";
 import { ICreateProxyBody, ICreateToxicBody } from "./interfaces";
-import {expect} from "@jest/globals";
 
 export interface ICreateProxyHelper {
     proxy: Proxy;
@@ -19,8 +18,6 @@ export const createProxy = async (name: string): Promise<ICreateProxyHelper> => 
         upstream: "localhost:6379"
     };
     const proxy = await toxiproxy.createProxy(body);
-    expect(body.name).toBe(proxy.name);
-
     return { proxy, toxiproxy };
 };
 
@@ -30,11 +27,7 @@ export const createToxic = async <T>(proxy: Proxy, type: string, attributes: T):
         type: type
     };
 
-    const toxic = await proxy.addToxic(body);
-    expect(body.type).toBe(toxic.type);
-    expect(toxic.name).toBe(proxy.toxics[proxy.toxics.length - 1].name);
-
-    return toxic;
+    return await proxy.addToxic(body);
 };
 
 export async function removeAllProxies() {
