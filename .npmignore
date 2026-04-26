@@ -3,7 +3,8 @@ example-code
 src
 .gitignore
 .npmignore
-eslint.config.mjs
 jest.config.js
-README.md
 tsconfig.json
+specs
+dist/tests
+eslint.config.mjs
