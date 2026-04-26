@@ -1,16 +1,17 @@
 {
   "name": "toxiproxy-node-client",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Node Client for Toxiproxy",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
+    "build": "run-s clean build:ts",
+    "build:ts": "tsc",
     "clean": "rimraf ./dist",
     "test": "jest --runInBand",
-    "lint": "eslint '**/*.{ts,tsx}'",
-    "lint:fix": "eslint --fix '**/*.{ts,tsx}'",
-    "build": "npm run clean && tsc && echo built",
-    "prepublish": "npm run build"
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "prepublish": "run-s build lint test"
   },
   "repository": {
     "type": "git",
@@ -23,19 +24,17 @@
   },
   "homepage": "https://github.com/ihsw/toxiproxy-node-client#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.5",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
-    "eslint": "^8.49.0",
+    "@types/node": "^18.19.130",
+    "eslint": "^10.2.1",
     "jest": "^29.7.0",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^5.0.1",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
-    "typescript": "~5.1.3"
-  },
-  "dependencies": {
-    "axios": "^1.7.2"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.0"
   }
 }

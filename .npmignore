@@ -1,6 +1,9 @@
-node_modules
-npm-debug.log
-.vscode
-
-tests
-/src
+.idea
+example-code
+src
+.gitignore
+.npmignore
+eslint.config.mjs
+jest.config.js
+README.md
+tsconfig.json
