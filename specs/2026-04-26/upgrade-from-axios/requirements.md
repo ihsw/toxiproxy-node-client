@@ -89,6 +89,29 @@ including the files under `src/tests/`. Tests are not executed in this
 task, but any test that referenced `axios`, `AxiosInstance`,
 `AxiosError`, etc. MUST be updated to reference the new types/symbols.
 
+## Non-Functional Requirements
+
+### NFR-1 Lint after every file modification
+To guard against regressions and to keep the working tree in a
+continuously-green lint state during the refactor, `npm run lint` MUST
+be executed after **every** modification to a file under `src/` (and
+after any change to `eslint.config.mjs`, `tsconfig.json`, or
+`package.json` that could influence linting). Concretely:
+
+- After saving a single file edit, run `npm run lint` (or
+  `npx eslint <changed-file>` for a faster local check, followed by a
+  full `npm run lint` before moving on to the next file).
+- The lint run MUST exit with code 0 before the next file is modified.
+  If new errors are introduced, they MUST be fixed in the same step
+  that produced them — do not accumulate lint debt across tasks.
+- The total number of lint errors MUST monotonically decrease (or stay
+  at zero once cleared) across the task list in `tasks.md`. A step that
+  raises the error count is treated as a regression and must be
+  reverted or repaired before proceeding.
+- This NFR applies to every task in `tasks.md`, including the
+  `package.json` and test-file edits, not only to changes in
+  production source files.
+
 ## Acceptance Criteria
 
 - [ ] `axios` is removed from `dependencies` and `devDependencies` in
