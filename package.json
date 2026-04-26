@@ -11,6 +11,7 @@
     "test": "jest --runInBand",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
+    "typecheck": "tsc --noEmit",
     "prepublish": "run-s build lint test"
   },
   "repository": {
@@ -23,6 +24,9 @@
     "url": "https://github.com/ihsw/toxiproxy-node-client/issues"
   },
   "homepage": "https://github.com/ihsw/toxiproxy-node-client#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@jest/globals": "^29.7.0",

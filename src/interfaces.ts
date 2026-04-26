@@ -51,7 +51,7 @@ export interface IProxyResponse {
     /**
      * list of toxics
      */
-    toxics: IToxicResponse<any>[];
+    toxics: IToxicResponse<unknown>[];
 }
 
 export interface IToxicBody<T> {
@@ -84,7 +84,7 @@ export interface IToxicBody<T> {
     attributes: T;
 }
 
-export interface IToxicResponse<T> extends IToxicBody<T> { }
+export type IToxicResponse<T> = IToxicBody<T>;
 
 // request & responses for GET /proxies
 export interface IGetProxiesResponse {
@@ -92,18 +92,18 @@ export interface IGetProxiesResponse {
 }
 
 // request & responses for POST /proxies
-export interface ICreateProxyBody extends IProxyBody { }
-export interface ICreateProxyResponse extends IProxyResponse { }
+export type ICreateProxyBody = IProxyBody;
+export type ICreateProxyResponse = IProxyResponse;
 
 // request & responses for POST /populate
-export interface IPopulateProxiesBody extends Array<IProxyBody> { }
+export type IPopulateProxiesBody = IProxyBody[];
 
 export interface IPopulateProxiesResponse {
     proxies: IProxyResponse[];
 }
 
 // request & responses for GET /proxies/{proxy}
-export interface IGetProxyResponse extends IProxyResponse { }
+export type IGetProxyResponse = IProxyResponse;
 
 // request & responses for POST /proxies/{proxy}
 export interface IUpdateProxyBody {
@@ -125,21 +125,21 @@ export interface IUpdateProxyBody {
     upstream: string;
 }
 
-export interface IUpdateProxyResponse extends IProxyResponse { }
+export type IUpdateProxyResponse = IProxyResponse;
 
 // request & responses for DELETE /proxies/{proxy}
 // intentionally left blank
 
 // request & responses for GET /proxies/{proxy}/toxics
-export interface IGetToxicsResponse<T> extends Array<IToxicResponse<T>> { }
+export type IGetToxicsResponse<T> = IToxicResponse<T>[];
 
 // request & responses for POST /proxies/{proxy}/toxics
-export interface ICreateToxicBody<T> extends IToxicBody<T> { }
-export interface ICreateToxicResponse<T> extends IToxicResponse<T> { }
+export type ICreateToxicBody<T> = IToxicBody<T>;
+export type ICreateToxicResponse<T> = IToxicResponse<T>;
 
 // request & responses for GET /proxies/{proxy}/toxics/{toxic}
-export interface IGetToxicResponse<T> extends IToxicResponse<T> { }
+export type IGetToxicResponse<T> = IToxicResponse<T>;
 
 // request & responses for POST /proxies/{proxy}/toxics/{toxic}
-export interface IUpdateToxicBody<T> extends IToxicBody<T> { }
-export interface IUpdateToxicResponse<T> extends IToxicResponse<T> { }
+export type IUpdateToxicBody<T> = IToxicBody<T>;
+export type IUpdateToxicResponse<T> = IToxicResponse<T>;

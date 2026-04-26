@@ -182,6 +182,15 @@ is a non-breaking refactor.
   previous version, ensure it is fully removed). Add an explicit
   `engines` field documenting `"node": ">=18"` to capture the global
   `fetch` requirement.
+- Add a `"typecheck": "tsc --noEmit"` entry to `scripts` so that
+  type-checking can be run as `npm run typecheck` instead of via `npx`,
+  in line with **NFR-2** (no `npx`).
+- All verification in this design uses `npm run` scripts only:
+  - `npm run lint` — ESLint (already present).
+  - `npm run typecheck` — `tsc --noEmit` (added by this change).
+  - `npm run build` — full compile (already present).
+  No command in this design, in `tasks.md`, or in any tooling we add
+  may invoke `npx`.
 
 ## Error mapping
 

@@ -84,7 +84,7 @@ errors MUST be resolved:
   multiple empty-extension interfaces in `interfaces.ts`.
 
 ### FR-5 Tests compile
-After the refactor `npx tsc --noEmit` MUST succeed for the project,
+After the refactor `npm run typecheck` MUST succeed for the project,
 including the files under `src/tests/`. Tests are not executed in this
 task, but any test that referenced `axios`, `AxiosInstance`,
 `AxiosError`, etc. MUST be updated to reference the new types/symbols.
@@ -98,9 +98,8 @@ be executed after **every** modification to a file under `src/` (and
 after any change to `eslint.config.mjs`, `tsconfig.json`, or
 `package.json` that could influence linting). Concretely:
 
-- After saving a single file edit, run `npm run lint` (or
-  `npx eslint <changed-file>` for a faster local check, followed by a
-  full `npm run lint` before moving on to the next file).
+- After saving a single file edit, run `npm run lint` before moving on
+  to the next file.
 - The lint run MUST exit with code 0 before the next file is modified.
   If new errors are introduced, they MUST be fixed in the same step
   that produced them — do not accumulate lint debt across tasks.
@@ -112,13 +111,38 @@ after any change to `eslint.config.mjs`, `tsconfig.json`, or
   `package.json` and test-file edits, not only to changes in
   production source files.
 
+### NFR-2 Never use `npx`
+Use of `npx` is **disallowed** for every command executed as part of
+this work — including local development, CI scripts, documentation
+examples, task instructions, and anything performed by an automated
+agent. Concretely:
+
+- Do NOT invoke `npx <anything>` in a terminal, shell script, Makefile,
+  npm script, CI configuration, or agent tool call.
+- All tooling (TypeScript compiler, ESLint, Jest, rimraf, etc.) MUST be
+  invoked through `npm run <script>` entries defined in `package.json`,
+  or through binaries already on `PATH` after `npm install`.
+- If a needed command is not currently exposed via an `npm run` script,
+  add a script to `package.json` rather than reaching for `npx`.
+  Examples:
+  - Use `npm run lint` (already defined) instead of `npx eslint src`.
+  - Use `npm run build` (already defined) instead of `npx tsc`.
+  - For type-checking only, add a `"typecheck": "tsc --noEmit"` script
+    and run `npm run typecheck` instead of `npx tsc --noEmit`.
+- Any earlier text in this spec, in `design.md`, or in `tasks.md` that
+  mentions `npx` MUST be interpreted as the equivalent `npm run` script
+  invocation. The spec authors will update those references; until then,
+  the prohibition in this NFR overrides them.
+- Pull requests / commits that introduce new `npx` invocations MUST be
+  rejected.
+
 ## Acceptance Criteria
 
 - [ ] `axios` is removed from `dependencies` and `devDependencies` in
       `package.json`.
 - [ ] No `import ... from "axios"` statements remain in `src/`.
 - [ ] `npm run lint` exits 0 with no errors and no new warnings.
-- [ ] `npx tsc --noEmit` exits 0.
+- [ ] `npm run typecheck` exits 0.
 - [ ] `Toxiproxy`, `Proxy`, `Toxic` continue to work against a real
       Toxiproxy server (verified by code review of behaviour parity; the
       test suite is not executed in this task).

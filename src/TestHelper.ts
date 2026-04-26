@@ -34,9 +34,9 @@ export async function removeAllProxies() {
     const toxiproxy = new Toxiproxy(toxiproxyUrl);
 
     const proxies = await toxiproxy.getAll();
-    const promises: Promise<any>[] = [];
+    const promises: Promise<unknown>[] = [];
     for (const proxyName in proxies) {
-        if (proxies.hasOwnProperty(proxyName)) {
+        if (Object.prototype.hasOwnProperty.call(proxies, proxyName)) {
             const proxy: Proxy = proxies[proxyName];
             await proxy.remove();
         }

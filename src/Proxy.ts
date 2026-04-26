@@ -9,19 +9,19 @@ import {
     ICreateToxicBody, ICreateToxicResponse,
     IGetToxicResponse
 } from "./interfaces";
-import { AxiosInstance } from "axios";
+import { HttpClient } from "./HttpClient";
 
 export interface ProxyJson {
     name: string;
     listen: string;
     upstream: string;
     enabled: boolean;
-    toxics: ToxicJson<any>[];
+    toxics: ToxicJson<unknown>[];
 }
 
 export default class Proxy {
     readonly toxiproxy: Toxiproxy;
-    readonly api: AxiosInstance;
+    readonly api: HttpClient;
 
     readonly name: string;
     readonly listen: string;

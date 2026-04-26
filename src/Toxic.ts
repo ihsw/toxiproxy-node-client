@@ -2,7 +2,7 @@ import {
     ICreateToxicBody,
     IUpdateToxicBody, IUpdateToxicResponse
 } from "./interfaces";
-import { AxiosInstance } from "axios";
+import { HttpClient } from "./HttpClient";
 
 export type Direction = "upstream" | "downstream";
 
@@ -33,7 +33,7 @@ export interface Latency {
  * Bringing a service down is not technically a toxic in the implementation of Toxiproxy.
  * This is done by POSTing to /proxies/{proxy} and setting the enabled field to false.
  */
-export interface Down { }
+export type Down = Record<string, never>;
 
 /**
  * Limit a connection to a maximum number of kilobytes per second.
@@ -139,14 +139,14 @@ export interface ToxicJson<T> {
 
 export default class Toxic<T> {
     readonly proxyPath: string;
-    readonly api: AxiosInstance;
+    readonly api: HttpClient;
     readonly name: string;
     readonly type: Type;
     readonly stream: Direction;
     readonly toxicity: number;
     readonly attributes: T;
 
-    constructor(api: AxiosInstance, proxyPath: string, body: ICreateToxicBody<T>) {
+    constructor(api: HttpClient, proxyPath: string, body: ICreateToxicBody<T>) {
         this.api = api;
         this.proxyPath = proxyPath;
         this.name = body.name;

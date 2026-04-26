@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
-
 import Proxy from "./Proxy";
+import { HttpClient } from "./HttpClient";
+import { ToxiproxyError } from "./ToxiproxyError";
 import {
     ICreateProxyBody,
     ICreateProxyResponse,
@@ -10,44 +10,23 @@ import {
     IGetProxiesResponse
 } from "./interfaces";
 
+export { ToxiproxyError };
+
 export interface Proxies {
     [name: string]: Proxy;
 }
 
-export class ToxiproxyError {
-    name: string;
-    message: string;
-    stack?: string;
-
-    constructor(name: string, message: string, stack?: string) {
-        this.name = name;
-        this.message = message;
-        this.stack = stack;
-    }
-}
 
 export default class Toxiproxy {
     host: string;
-    api: AxiosInstance;
+    api: HttpClient;
 
     constructor(host: string) {
-        this.api = axios.create();
-        this.api.interceptors.response.use((response) => response, (error) => {
-            if (error instanceof AxiosError) {
-                // Return a simplified error object to avoid "TypeError: Converting circular structure to JSON".
-                // Really not sure why this is not the default behavior.
-                return Promise.reject(new ToxiproxyError(
-                    error.name,
-                    error.message,
-                    error.stack,
-                ));
-            }
-            return Promise.reject("Unknown error");
-        });
+        this.api = new HttpClient();
         this.host = host;
     }
 
-    getApi(): AxiosInstance {
+    getApi(): HttpClient {
         return this.api;
     }
 
@@ -73,11 +52,11 @@ export default class Toxiproxy {
     }
 
     async getVersion(): Promise<string> {
-        return await this.api.get(`${this.host}/version`);
+        return await this.api.getText(`${this.host}/version`);
     }
 
     async reset(): Promise<void> {
-        return await this.api.post(`${this.host}/reset`);
+        await this.api.post(`${this.host}/reset`);
     }
 
     async getAll(): Promise<Proxies> {
